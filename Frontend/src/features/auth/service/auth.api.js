@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3000/api/auth'; 
+const BASE_URL = import.meta.env.VITE_API_URL || '/api/auth';
 
 export const authAPI = {
   register: async (userData) => {
@@ -8,26 +8,55 @@ export const authAPI = {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
-          fullname: userData.fullname,  // Backend key se match hona chahiye
+          fullname: userData.fullname,
           email: userData.email,
           contact: userData.contact,
-          password: userData.password
+          password: userData.password,
+          isSeller: userData.isSeller ?? false,
         }),
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        
-        const errorMsg = data.errors ? data.errors[0].msg : 'Registration failed!';
+        const errorMsg = data.errors?.[0]?.msg || data.message || 'Registration failed!';
         throw new Error(errorMsg);
       }
 
-      return data; 
+      return data;
     } catch (error) {
       console.error('Error in authAPI.register:', error.message);
       throw error;
     }
-  }
+  },
+
+  login: async (credentials) => {
+    try {
+      const response = await fetch(`${BASE_URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          email: credentials.email,
+          password: credentials.password,
+        }),
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        const errorMsg = data.errors?.[0]?.msg || data.message || 'Login failed!';
+        throw new Error(errorMsg);
+      }
+
+      return data;
+    } catch (error) {
+      console.error('Error in authAPI.login:', error.message);
+      throw error;
+    }
+  },
 };

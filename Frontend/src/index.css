@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gold: #ffd700;
+  --color-gold-hover: #ffe16d;
+  --color-bg-dark: #0a0a0a;
+  --color-surface-dark: #121212;
+  --color-surface-hover: #1a1a1a;
+  --color-border-dark: #262626;
+
+  /* Spacing and sizes matching Stitch guidelines */
+  --spacing-container-max: 480px;
+  --spacing-input-padding: 16px 20px;
+  --spacing-stack-lg: 48px;
+  --spacing-stack-md: 24px;
+  --spacing-stack-sm: 12px;
+}
+
+@layer base {
+  body {
+    background-color: #0a0a0a;
+    color: #ffffff;
+    font-family: 'Geist', sans-serif;
+  }
+}

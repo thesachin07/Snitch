@@ -17,5 +17,17 @@ export const createAuthSlice = (set) => ({
     }
   },
 
+  loginUser: async (credentials) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await authAPI.login(credentials);
+      set({ user: response.user ?? credentials, loading: false, error: null });
+      return { success: true, data: response };
+    } catch (err) {
+      set({ error: err.message, loading: false });
+      return { success: false, error: err.message };
+    }
+  },
+
   logoutUser: () => set({ user: null, error: null }),
 });
