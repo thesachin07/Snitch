@@ -78,4 +78,51 @@ export const login = async (req, res) => {
         console.error(error);
         return res.status(500).json({ message: "Server error" });
     }
-}
+};
+
+export const googleCallback = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Google authentication failed",
+      });
+    }
+
+    const { displayName, emails } = req.user;
+
+    const email = emails[0].value;
+
+    let user = await userModel.findOne({ email });
+
+    if (!user) {
+      user = await userModel.create({
+        fullname: displayName,
+        email,
+        password: null, 
+        contact: null,
+        role: "buyer",
+      });
+    }
+
+    const token = jwt.sign(
+      { id: user._id },
+      config.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    return res.redirect("http://localhost:5173/dashboard");
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
