@@ -315,6 +315,9 @@ export default function Register() {
                       )}
                     </button>
 
+<a href="http://localhost:3000/api/auth/google" className="text-center text-[13px] text-neutral-400 underline underline-offset-4 hover:text-[#FFD700] transition-colors duration-200 mt-2">
+    Continue with Google
+  </a>
                     <p className="text-center text-[13px] text-neutral-400 mt-2">
     Already have an account?{' '}
    
@@ -328,6 +331,7 @@ export default function Register() {
       Sign in
     </button>
   </p>
+  
                   </div>
                 </form>
               </>

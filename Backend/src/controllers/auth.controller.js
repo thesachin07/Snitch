@@ -29,6 +29,7 @@ async function sendTokenResponse(user, res, message) {
 }
 
 export const register = async (req, res) => {
+    console.log("Register request body:", req.body);
     const { email, contact, password, fullname, isSeller = false } = req.body;
 
     try {
@@ -58,6 +59,7 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
+    console.log("Login request body:", req.body);
     const { email, password } = req.body;
 
     try {
@@ -81,6 +83,7 @@ export const login = async (req, res) => {
 };
 
 export const googleCallback = async (req, res) => {
+    console.log("Google callback triggered");
   try {
     if (!req.user) {
       return res.status(401).json({
@@ -117,7 +120,7 @@ export const googleCallback = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
     });
 
-    return res.redirect("http://localhost:5173/dashboard");
+    return res.redirect("http://localhost:5173/");
   } catch (error) {
     console.error(error);
     return res.status(500).json({

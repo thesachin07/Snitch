@@ -3,8 +3,8 @@ import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
-    contact: { type: String, required: true },
-    password: { type: String, required: true },
+    contact: { type: String, default: null },
+    password: { type: String, default: null },
     fullname: { type: String, required: true },
     role: {
         type: String,
@@ -13,14 +13,19 @@ const userSchema = new mongoose.Schema({
     },
 });
 
-userSchema.pre("save", async function () {
-    if (!this.isModified("password")) return;
 
-    const hash = await bcrypt.hash(this.password, 10);
-    this.password = hash;
+userSchema.pre("save", async function (next) {
+    if (!this.password || !this.isModified("password")) {
+        return next();
+    }
+
+    this.password = await bcrypt.hash(this.password, 10);
+
+    next();
 });
 
 userSchema.methods.comparePassword = async function (password) {
+    if (!this.password) return false;
     return await bcrypt.compare(password, this.password);
 };
 
