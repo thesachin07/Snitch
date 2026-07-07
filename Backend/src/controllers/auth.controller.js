@@ -92,7 +92,7 @@ export const googleCallback = async (req, res) => {
       });
     }
 
-    const { displayName, emails } = req.user;
+    const { id, displayName, emails, photos } = req.user;
 
     const email = emails[0].value;
 
@@ -102,6 +102,7 @@ export const googleCallback = async (req, res) => {
       user = await userModel.create({
         fullname: displayName,
         email,
+        googleId: id,
         password: null, 
         contact: null,
         role: "buyer",

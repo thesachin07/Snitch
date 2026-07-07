@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../hook/useAuth.js';
 import { useNavigate } from 'react-router';
+import ContinueWithGoogle from '../components/ContinueWithGoogle.jsx'
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -198,7 +199,7 @@ export default function Login() {
                     'Sign In'
                   )}
                 </button>
-              
+              <ContinueWithGoogle/>
                 <p className="text-center text-[13px] text-neutral-400 mt-2">
                   Don't have an account?{' '}
                   <span 

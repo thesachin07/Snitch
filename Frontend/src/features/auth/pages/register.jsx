@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '../hook/useAuth.js';
 import { useNavigate } from 'react-router';
+import ContinueWithGoogle from '../components/ContinueWithGoogle';
+
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -315,9 +317,7 @@ export default function Register() {
                       )}
                     </button>
 
-<a href="http://localhost:3000/api/auth/google" className="text-center text-[13px] text-neutral-400 underline underline-offset-4 hover:text-[#FFD700] transition-colors duration-200 mt-2">
-    Continue with Google
-  </a>
+<ContinueWithGoogle />
                     <p className="text-center text-[13px] text-neutral-400 mt-2">
     Already have an account?{' '}
    
