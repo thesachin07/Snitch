@@ -12,10 +12,15 @@ import mongoose from 'mongoose';
     },
         
     price: {
-       amount: { type: Number, required: true },
-        currency: { type: String, enum: ['USD', 'EUR', 'GBP'], required: true },
+       amount: { type: Number, 
+        required: true },
+
+        currency: { type: String,
+             enum: ['USD', 'EUR', 'GBP'],
+              required: true ,
         default: "INR"
-    },
+    }
+},
 
     images: [
         {
@@ -32,6 +37,6 @@ import mongoose from 'mongoose';
  }, { timestamps: true }
 )
 
-const productModel = mongoose.model('product', productSchema);
+const productModel = mongoose.model('product', ProductSchema);
 
 export default productModel;
