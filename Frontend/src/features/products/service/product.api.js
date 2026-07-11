@@ -14,9 +14,8 @@ export async function createProduct(formData) {
         console.error("Error creating product:", error);
         throw error;
     }
-
+}
     export async function getSellerProducts() {
         const response = await productApiInstamce.get("/seller")
         return response.data;
     }
-}
