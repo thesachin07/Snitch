@@ -1,9 +1,10 @@
 import axios from "axios";
 
 const productApiInstance = axios.create({
-    baseURL: "api/products",
+    baseURL: "/api/products",
     withCredentials: true,
 })
+
 
 export async function createProduct(formData) {
     try {
@@ -16,6 +17,6 @@ export async function createProduct(formData) {
     }
 }
     export async function getSellerProducts() {
-        const response = await productApiInstamce.get("/seller")
+        const response = await productApiInstance.get("/seller")
         return response.data;
     }

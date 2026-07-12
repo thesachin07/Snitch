@@ -20,15 +20,20 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const user = await handleLogin({
-        email: formData.email,
-        password: formData.password,
-      });
-      if (user.role == "buyer") {
-        navigate("/");
-      } else if (user.role == "seller") {
-        navigate("/seller/dashboard");
-      }
+     const result = await handleLogin({
+  email: formData.email,
+  password: formData.password,
+});
+
+if (!result.success) return;
+
+const user = result.data.user;
+
+if (user.role === "buyer") {
+  navigate("/");
+} else if (user.role === "seller") {
+  navigate("/seller/create-product");
+}
     } catch (error) {
       console.error("Login failed", error);
     }

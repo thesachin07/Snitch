@@ -40,6 +40,6 @@ export const useAuth = () => {
     error: storeError,
     isSuccess,
     register: handleRegister,
-    login: handleLogin,
+     handleLogin,
   };
 };
