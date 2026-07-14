@@ -39,7 +39,7 @@ export const useAuth = () => {
     loading: storeLoading,
     error: storeError,
     isSuccess,
-    register: handleRegister,
+    handleRegister,
      handleLogin,
   };
 };
