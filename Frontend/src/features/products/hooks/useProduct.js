@@ -16,11 +16,11 @@ export const useProduct = () => {
 
     async function handleGetSellerProduct() {
         const data = await getSellerProducts();
+        //  console.log("API Response:", data);
           setSellerProducts(data.products);
         return data.products;
     }
        
-
     return {
         handleCreateProduct,
         handleGetSellerProduct,
