@@ -4,6 +4,7 @@ import useAppStore from '../../../app/app.store.js';
 export const useAuth = () => {
   const registerUserStore = useAppStore((state) => state.registerUser);
   const loginUserStore = useAppStore((state) => state.loginUser);
+  const getMeStore = useAppStore((state) => state.getMe);
   const storeError = useAppStore((state) => state.error);
   const storeLoading = useAppStore((state) => state.loading);
   const user = useAppStore((state) => state.user);
@@ -34,6 +35,12 @@ export const useAuth = () => {
     return result;
   };
 
+const handleGetMe = async () => {
+  const data = await getMeStore();
+
+  return data;
+};
+
   return {
     user,
     loading: storeLoading,
@@ -41,5 +48,6 @@ export const useAuth = () => {
     isSuccess,
     handleRegister,
      handleLogin,
+     handleGetMe,
   };
 };

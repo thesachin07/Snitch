@@ -59,4 +59,19 @@ export const authAPI = {
       throw error;
     }
   },
+
+  getMe: async () => {
+  const response = await fetch(`${BASE_URL}/me`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "Failed to fetch user");
+  }
+
+  return data;
+}
 };

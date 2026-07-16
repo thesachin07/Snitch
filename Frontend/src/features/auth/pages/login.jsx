@@ -32,7 +32,7 @@ const user = result.data.user;
 if (user.role === "buyer") {
   navigate("/");
 } else if (user.role === "seller") {
-  navigate("/seller/create-product");
+  navigate("/seller/dashboard");
 }
     } catch (error) {
       console.error("Login failed", error);

@@ -2,7 +2,7 @@ import { authAPI } from '../service/auth.api.js';
 
 export const createAuthSlice = (set) => ({
   user: null,
-  loading: false,
+  loading: true,
   error: null,
 
   registerUser: async (userData) => {
@@ -28,6 +28,36 @@ export const createAuthSlice = (set) => ({
       return { success: false, error: err.message };
     }
   },
+
+
+getMe: async () => {
+    try {
+      set({ loading: true, error: null });
+
+      const data = await authAPI.getMe();
+
+      set({
+        user: data.user,
+        loading: false,
+      });
+
+      return {
+        success: true,
+        data,
+      };
+    } catch (err) {
+      set({
+        loading: false,
+        error: err.message,
+      });
+
+      return {
+        success: false,
+        error: err.message,
+      };
+    }
+  },
+
 
   logoutUser: () => set({ user: null, error: null }),
 });
