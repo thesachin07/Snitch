@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router";
+import Home from "../features/products/pages/Home.jsx";
 import Register from "../features/auth/pages/register.jsx";
 import Login from "../features/auth/pages/login.jsx";
 import CreateProduct from "../features/products/pages/CreateProduct.jsx";
@@ -8,7 +9,7 @@ import Protected from "../features/auth/components/Protected.jsx";
 export const routes = createBrowserRouter([
   {
     path: "/",
-    element: <h1>hello world</h1>,
+    element: <Home />,
   },
 
   {

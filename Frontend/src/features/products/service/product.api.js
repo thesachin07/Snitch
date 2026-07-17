@@ -20,3 +20,12 @@ export async function createProduct(formData) {
         const response = await productApiInstance.get("/seller")
         return response.data;
     }
+
+    export async function getAllProducts(){
+       try{
+        const response = await productApiInstance.get("/")
+        return response.data
+       }catch(err){
+  console.error(`Fetch failed: ${err.response?.status || 'Network Error'}`, err.message);        throw err;
+       }
+    }

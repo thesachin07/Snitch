@@ -1,9 +1,9 @@
 import useAppStore from "../../../app/app.store";
-import { createProduct, getSellerProducts } from "../service/product.api";
+import { createProduct, getSellerProducts, getAllProducts } from "../service/product.api";
 
 export const useProduct = () => {
 
-
+ const setProducts = useAppStore((state) => state.setProducts);
     const setSellerProducts = useAppStore(
         (state) => state.setSellerProducts
     );
@@ -21,8 +21,17 @@ export const useProduct = () => {
         return data.products;
     }
        
+    async function handleGetAllProducts(){
+        const data = await getAllProducts()
+ console.log("API Response:", data);
+        setProducts(data.products);
+        console.log("Products from API:", data.products);
+        return data.products;
+    }
+
     return {
         handleCreateProduct,
         handleGetSellerProduct,
+        handleGetAllProducts,
     };
 };
