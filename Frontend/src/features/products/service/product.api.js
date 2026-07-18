@@ -29,3 +29,8 @@ export async function createProduct(formData) {
   console.error(`Fetch failed: ${err.response?.status || 'Network Error'}`, err.message);        throw err;
        }
     }
+
+    export async function getProductById(productId) {
+        const response = await productApiInstance.get(`/detail/${productId}`)
+        return response.data
+    }

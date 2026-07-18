@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
 import useAppStore from "../../../app/app.store";
 import { useProduct } from "../hooks/useProduct";
+import { useNavigate } from "react-router"
 
 const Home = () => {
   const products = useAppStore((state) => state.products);
   const { handleGetAllProducts } = useProduct();
+  const navigate = useNavigate();
 
   useEffect(() => {
     handleGetAllProducts();
