@@ -5,6 +5,7 @@ import Login from "../features/auth/pages/login.jsx";
 import ProductDetail from "../features/products/pages/ProductDetail.jsx";
 import CreateProduct from "../features/products/pages/CreateProduct.jsx";
 import Dashboard from "../features/products/pages/Dashboard";
+import SellerProductDetails from "../features/products/pages/SellerProductDetails.jsx";
 import Protected from "../features/auth/components/Protected.jsx";
 
 export const routes = createBrowserRouter([
@@ -48,6 +49,15 @@ export const routes = createBrowserRouter([
           </Protected>
         ),
       },
+
+{
+        path: "/seller/product/:productId",
+        element: 
+          <Protected role="seller">
+            <SellerProductDetails />
+          </Protected>       
+      },
+
     ],
   },
 ]);
