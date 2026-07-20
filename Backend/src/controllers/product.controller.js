@@ -76,7 +76,10 @@ export async function getAllProducts(req, res) {
        })
     }
 
-    export async function addProductVariant(req, res){
+ export async function addProductVariant(req, res){
+
+console.log("BODY:", req.body);
+    console.log("FILES:", req.files);
 
         const productId = req.params.productId;
         const product = await productModel.findOne({
@@ -93,11 +96,11 @@ export async function getAllProducts(req, res) {
 
         const files = req.files;
         const images = []
-        if(files || files.length !==0){
+        if(files && files.length > 0){
             (await Promise.all(files.map(async (file) => {
                 const image = await uploadFile({
                     buffer: file.buffer,
-                    fileName: file.orginialname
+                    fileName: file.originalname
                 })
                 
                 return image
@@ -107,5 +110,25 @@ export async function getAllProducts(req, res) {
         const stock = req.body.stock
         const attributes = JSON.parse(req.body.attributes || "{}")
    
-   console.log(product, images, price, stock, attributes )
-    }
+    console.log(price)
+
+    product.variants.push({
+        images,
+        price: {
+            amount: Number(price) || product.price.amount,
+            currency: req.body.priceCurrency || product.price.currency
+        },
+        stock,
+        attributes
+    })
+
+    await product.save();
+
+    return res.status(200).json({
+        message: "Product variant added successfully",
+        success: true,
+        product
+    })
+
+}
+    

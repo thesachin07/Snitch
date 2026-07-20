@@ -37,6 +37,8 @@ export async function createProduct(formData) {
 
     export async function addProductVariant(productId, newProductVariant) {
 
+          console.log(newProductVariant)
+          
         const formData = new FormData()
 
         newProductVariant.images.forEach((image) => {
@@ -44,7 +46,8 @@ export async function createProduct(formData) {
         })
 
         formData.append("stock", newProductVariant.stock)
-        formData.append("priceAmount", newProductVariant.stock)
+        formData.append("priceAmount", newProductVariant.price)
+        formData.append("priceCurrency", newProductVariant.currency || "INR")
         formData.append("attributes", JSON.stringify(newProductVariant.attributes))
 
         const response = await productApiInstance.post(`/${productId}/variants`, formData)
