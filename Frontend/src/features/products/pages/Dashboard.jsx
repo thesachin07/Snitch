@@ -92,7 +92,7 @@ const navigate = useNavigate();
                             {sellerProducts.map(product => {
                                 const imageUrl = product.images && product.images.length > 0
                                     ? product.images[ 0 ].url
-                                    : '/snitch_editorial_warm.png'; // Fallback to our warm editorial
+                                    : '/snitch_editorial_warm.png'; 
 
                                 return (
                                     <div

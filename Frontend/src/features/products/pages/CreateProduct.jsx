@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router";
 import { useProduct } from "../hooks/useProduct";
 
+
 const CURRENCIES = ["INR", "USD", "EUR", "GBP"];
 const MAX_IMAGES = 7;
 
@@ -75,8 +76,8 @@ const CreateProduct = () => {
       data.append("priceAmount", formData.priceAmount);
       data.append("priceCurrency", formData.priceCurrency);
       images.forEach((img) => data.append("images", img.file));
-      await handleCreateProduct(data);
-      navigate("/");
+      const product = await handleCreateProduct(data);
+      navigate(`/seller/product/${product._id}`);
     } catch (err) {
       console.error("Failed to create product", err);
     } finally {
@@ -114,7 +115,6 @@ const CreateProduct = () => {
         }}
       >
         <div className="max-w-6xl mx-auto px-8 lg:px-16 xl:px-24">
-          {/* ── Top Bar ── */}
           <div className="pt-10 pb-0 flex items-center gap-5">
             <button
               onClick={() => navigate(-1)}
@@ -137,7 +137,6 @@ const CreateProduct = () => {
             </span>
           </div>
 
-          {/* ── Page Header ── */}
           <div className="pt-10 pb-0">
             <h1
               className="text-4xl lg:text-5xl font-light leading-tight"
@@ -148,19 +147,16 @@ const CreateProduct = () => {
             >
               New Listing
             </h1>
-            {/* Gold rule separator */}
+
             <div
               className="mt-4 w-14 h-px"
               style={{ backgroundColor: "#C9A96E" }}
             />
           </div>
 
-          {/* ── Form ── */}
           <form onSubmit={handleSubmit} className="pt-14 pb-24">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 lg:gap-20 lg:items-start">
-              {/* ── LEFT COLUMN: Text Fields ── */}
               <div className="flex flex-col gap-12">
-                {/* Product Title */}
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="cp-title"
@@ -184,7 +180,6 @@ const CreateProduct = () => {
                   />
                 </div>
 
-                {/* Description */}
                 <div className="flex flex-col gap-2">
                   <label
                     htmlFor="cp-description"
@@ -207,7 +202,6 @@ const CreateProduct = () => {
                   />
                 </div>
 
-                {/* Price */}
                 <div className="flex flex-col gap-3">
                   <label
                     className="text-[10px] uppercase tracking-[0.2em] font-medium"
@@ -216,7 +210,6 @@ const CreateProduct = () => {
                     Price
                   </label>
                   <div className="flex gap-5 items-end">
-                    {/* Amount */}
                     <div className="flex flex-col gap-1 flex-[3]">
                       <span
                         className="text-[9px] uppercase tracking-[0.18em]"
@@ -240,7 +233,7 @@ const CreateProduct = () => {
                         onBlur={handleBlur}
                       />
                     </div>
-                    {/* Currency */}
+
                     <div className="flex flex-col gap-1 flex-[1]">
                       <span
                         className="text-[9px] uppercase tracking-[0.18em]"
@@ -276,7 +269,6 @@ const CreateProduct = () => {
                 </div>
               </div>
 
-              {/* ── RIGHT COLUMN: Images ── */}
               <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                   <label
@@ -290,7 +282,6 @@ const CreateProduct = () => {
                   </span>
                 </div>
 
-                {/* Drop Zone */}
                 {images.length < MAX_IMAGES && (
                   <div
                     onDrop={handleDrop}
@@ -305,7 +296,6 @@ const CreateProduct = () => {
                         : "transparent",
                     }}
                   >
-                    {/* Upload icon */}
                     <div
                       className="w-10 h-10 flex items-center justify-center border transition-colors duration-300"
                       style={{
@@ -361,7 +351,6 @@ const CreateProduct = () => {
                   </div>
                 )}
 
-                {/* Image Previews */}
                 {images.length > 0 && (
                   <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-3 xl:grid-cols-4 gap-2 mt-1">
                     {images.map((img, index) => (
@@ -375,7 +364,7 @@ const CreateProduct = () => {
                           alt={`Preview ${index + 1}`}
                           className="w-full h-full object-cover"
                         />
-                        {/* Remove overlay */}
+
                         <button
                           type="button"
                           onClick={() => removeImage(index)}
@@ -395,7 +384,6 @@ const CreateProduct = () => {
               </div>
             </div>
 
-            {/* ── Submit Button ── */}
             <div className="mt-16 lg:mt-20">
               <button
                 type="submit"
