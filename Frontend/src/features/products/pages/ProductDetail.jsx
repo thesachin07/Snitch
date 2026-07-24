@@ -1,15 +1,61 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router";
 import { useProduct } from "../hooks/useProduct";
 
 const ProductDetail = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true); // Loading check setup
+  const [loading, setLoading] = useState(true);
 
-  // FIX 1: Missing image gallery, cart actions and variant states
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedAttributes, setSelectedAttributes] = useState({});
+
+  const availableAttributes = React.useMemo(() => {
+    if (!product?.variants) return {};
+
+    const attrs = {};
+
+    product.variants.forEach((variant) => {
+      Object.entries(variant.attributes).forEach(([key, value]) => {
+        if (!attrs[key]) {
+          attrs[key] = [];
+        }
+
+        if (!attrs[key].includes(value)) {
+          attrs[key].push(value);
+        }
+      });
+    });
+
+    return attrs;
+  }, [product]);
+
+  const activeVariant = React.useMemo(() => {
+    if (!product?.variants) return null;
+
+    return (
+      product.variants.find((variant) =>
+        Object.entries(selectedAttributes).every(
+          ([key, value]) => variant.attributes[key] === value,
+        ),
+      ) || product.variants[0]
+    );
+  }, [product, selectedAttributes]);
+
+  useEffect(() => {
+    if (product?.variants?.length > 0) {
+      console.log(
+        "Setting selected attributes:",
+        product.variants[0].attributes,
+      );
+
+      setSelectedAttributes(product.variants[0].attributes);
+    }
+  }, [product]);
+
+  useEffect(() => {
+    setSelectedImage(0);
+  }, [activeVariant]);
 
   const { handleGetProductById } = useProduct();
 
@@ -19,9 +65,7 @@ const ProductDetail = () => {
       const data = await handleGetProductById(productId);
       setProduct(data);
 
-      // Default select pehla variant agar options hain
       if (data?.variants && data.variants.length > 0) {
-        // Example structure if variants apply
       }
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -34,26 +78,45 @@ const ProductDetail = () => {
     fetchProductDetails();
   }, [productId]);
 
-  // FIX 2: Dynamic variables safely declared from API object structure
-  const displayImages = product?.images || [
-    { url: "/snitch_editorial_warm.png" },
-  ];
-  const displayPrice = product?.price || { currency: "INR", amount: 0 };
-  const availableAttributes = product?.attributes || {};
-  const activeVariant = product?.variants?.[0] || {
-    stock: product?.stock || 0,
-    _id: "default",
+  const displayImages =
+    activeVariant?.images?.length > 0
+      ? activeVariant.images
+      : product?.images || [{ url: "/snitch_editorial_warm.png" }];
+
+  const displayPrice = activeVariant?.price ||
+    product?.price || { currency: "INR", amount: 0 };
+
+  const handleAttributeChange = (attrName, value) => {
+    const newAttrs = { ...selectedAttributes, [attrName]: value };
+
+    // Find if an exact match exists for this combination
+    const exactMatch = product.variants.find((v) => {
+      const vAttrs = v.attributes || {};
+      return (
+        Object.keys(newAttrs).every((k) => newAttrs[k] === vAttrs[k]) &&
+        Object.keys(vAttrs).every((k) => newAttrs[k] === vAttrs[k])
+      );
+    });
+
+    if (exactMatch) {
+      setSelectedAttributes(exactMatch.attributes);
+    } else {
+      
+      const fallbackVariant = product.variants.find(
+        (v) => v.attributes && v.attributes[attrName] === value,
+      );
+      if (fallbackVariant) {
+        setSelectedAttributes(fallbackVariant.attributes);
+      } else {
+        setSelectedAttributes(newAttrs);
+      }
+    }
   };
 
-  // Placeholder handlers to stop UI reference crash
-  const handleAttributeChange = (name, value) => {
-    setSelectedAttributes((prev) => ({ ...prev, [name]: value }));
-  };
   const handleAddItem = (item) => {
     console.log("Item added to cart:", item);
   };
 
-  // FIX 3: Loading text/skeleton screen jab tak API response na aaye
   if (loading) {
     return (
       <div
@@ -79,10 +142,12 @@ const ProductDetail = () => {
       </div>
     );
   }
+  console.log("Available Attributes:", availableAttributes);
+  console.log("Selected Attributes:", selectedAttributes);
+  console.log("Active Variant:", activeVariant);
 
   return (
     <div>
-      {/* Google Fonts */}
       <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet"
@@ -97,9 +162,7 @@ const ProductDetail = () => {
       >
         <div className="max-w-7xl mx-auto px-8 lg:px-16 xl:px-24 pt-12 lg:pt-20">
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-24 items-start">
-            {/* ── LEFT: Image Gallery ── */}
             <div className="w-full lg:w-[70%] flex flex-col-reverse md:flex-row gap-4 lg:gap-6">
-              {/* Thumbnails */}
               {displayImages.length > 1 && (
                 <div className="flex flex-row md:flex-col gap-4 overflow-x-auto md:overflow-y-auto pb-2 md:pb-0 scrollbar-hide w-full md:w-20 lg:w-24 flex-shrink-0 md:max-h-[calc(100vh-200px)]">
                   {displayImages.map((img, idx) => (
@@ -122,7 +185,6 @@ const ProductDetail = () => {
                 </div>
               )}
 
-              {/* Main Image */}
               <div
                 className="relative w-full aspect-[4/5] overflow-hidden group"
                 style={{ backgroundColor: "#f5f3f0" }}
@@ -197,7 +259,6 @@ const ProductDetail = () => {
               </div>
             </div>
 
-            {/* ── RIGHT: Product Details ── */}
             <div className="w-full lg:w-[30%] lg:sticky lg:top-24 flex flex-col pt-4">
               <h1
                 className="text-4xl md:text-5xl lg:text-6xl font-light leading-[1.05] mb-6"
@@ -213,7 +274,7 @@ const ProductDetail = () => {
                 <span
                   className="text-sm uppercase tracking-[0.2em] font-medium"
                   style={{ color: "#1b1c1a" }}
-                  // Render displayPrice properly
+                  
                 >
                   {displayPrice?.currency}{" "}
                   {displayPrice?.amount?.toLocaleString()}
@@ -225,7 +286,7 @@ const ProductDetail = () => {
                 style={{ backgroundColor: "#e4e2df" }}
               />
 
-              {/* Options/Variants */}
+             
               {Object.entries(availableAttributes).map(([attrName, values]) => (
                 <div key={attrName} className="mb-6">
                   <h3
