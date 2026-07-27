@@ -1,4 +1,4 @@
-import priceSchema from './price.schema';
+import priceSchema from './price.schema.js';
 import mongoose, { trusted } from 'mongoose';
 
 const cartSchema = new mongoose.Schema({
@@ -16,7 +16,7 @@ const cartSchema = new mongoose.Schema({
             },
             variant: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: 'variant'
+                ref: 'product.variants'
             },
             quantity: {
                 type: Number,

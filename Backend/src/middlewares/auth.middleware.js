@@ -26,7 +26,6 @@ export const authenticateUser = async (req, res, next) => {
 };
 
 
-
 export const authenticateSeller = async (req, res, next) => {
   const token = req.cookies.token;
 

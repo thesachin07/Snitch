@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router";
 import { useProduct } from "../hooks/useProduct";
+import { useCart } from '../../cart/hooks/useCart';
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -9,6 +10,8 @@ const ProductDetail = () => {
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedAttributes, setSelectedAttributes] = useState({});
+ const { handleAddItem } = useCart()
+
 
   const availableAttributes = React.useMemo(() => {
     if (!product?.variants) return {};
@@ -41,6 +44,9 @@ const ProductDetail = () => {
       ) || product.variants[0]
     );
   }, [product, selectedAttributes]);
+
+console.log({productId, activeVariant})
+
 
   useEffect(() => {
     if (product?.variants?.length > 0) {
@@ -113,9 +119,9 @@ const ProductDetail = () => {
     }
   };
 
-  const handleAddItem = (item) => {
-    console.log("Item added to cart:", item);
-  };
+   
+    // console.log(product);
+  
 
   if (loading) {
     return (
@@ -142,9 +148,9 @@ const ProductDetail = () => {
       </div>
     );
   }
-  console.log("Available Attributes:", availableAttributes);
-  console.log("Selected Attributes:", selectedAttributes);
-  console.log("Active Variant:", activeVariant);
+  // console.log("Available Attributes:", availableAttributes);
+  // console.log("Selected Attributes:", selectedAttributes);
+  // console.log("Active Variant:", activeVariant);
 
   return (
     <div>
@@ -312,7 +318,7 @@ const ProductDetail = () => {
                 </div>
               ))}
 
-              {/* Stock Information */}
+             
               {activeVariant && activeVariant.stock !== undefined && (
                 <div className="mb-6">
                   <span
@@ -340,7 +346,6 @@ const ProductDetail = () => {
                 </p>
               </div>
 
-              {/* Actions */}
               <div className="flex flex-col gap-4 mt-auto">
                 <button
                   className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300"
