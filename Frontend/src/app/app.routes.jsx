@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router";
 import Home from "../features/products/pages/Home.jsx";
 import Register from "../features/auth/pages/register.jsx";
 import Login from "../features/auth/pages/login.jsx";
+import Cart from "../features/cart/pages/Cart.jsx";
 import ProductDetail from "../features/products/pages/ProductDetail.jsx";
 import CreateProduct from "../features/products/pages/CreateProduct.jsx";
 import Dashboard from "../features/products/pages/Dashboard";
@@ -28,6 +29,14 @@ export const routes = createBrowserRouter([
     path: "/product/:productId",
     element: <ProductDetail />,
   },
+
+  {
+        path: "/cart",
+        element: <Protected> 
+          <Cart />
+        </Protected>
+      },
+
 
   {
     path: "/seller",
@@ -58,6 +67,7 @@ export const routes = createBrowserRouter([
           </Protected>       
       },
 
+      
     ],
   },
 ]);
