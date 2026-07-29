@@ -20,6 +20,8 @@ export const addToCart = async (req, res) => {
     });
   }
 
+  const variant = product.variants.find((variant) => variant._id?.toString() === variantId?.toString());
+  const price = variant?.price ?? product.price;
   const stock = await stockOfVariant(productId, variantId);
 
   let cart = await cartModel.findOne({ user: req.user._id });
@@ -34,7 +36,6 @@ export const addToCart = async (req, res) => {
   );
 
   if (existingItemIndex > -1) {
-  
     const currentQtyInCart = cart.items[existingItemIndex].quantity;
     if (currentQtyInCart + quantity > stock) {
       return res.status(400).json({
@@ -56,7 +57,7 @@ export const addToCart = async (req, res) => {
       product: productId,
       variant: variantId,
       quantity,
-      price: product.price,
+      price,
     });
   }
 

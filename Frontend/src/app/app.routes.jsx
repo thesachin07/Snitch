@@ -8,22 +8,26 @@ import CreateProduct from "../features/products/pages/CreateProduct.jsx";
 import Dashboard from "../features/products/pages/Dashboard";
 import SellerProductDetails from "../features/products/pages/SellerProductDetails.jsx";
 import Protected from "../features/auth/components/Protected.jsx";
+import AppLayout from "./AppLayout.jsx";
+import { Children } from "react";
 
 export const routes = createBrowserRouter([
-  {
-    path: "/",
-    element: <Home />,
-  },
+   {
+        path: "/register",
+        element: <Register />,
+    },
+    {
+        path: "/login",
+        element: <Login />,
+    },
 
-  {
-    path: "/register",
-    element: <Register />,
-  },
-
-  {
-    path: "/login",
-    element: <Login />,
-  },
+{
+  element: <AppLayout />,
+  children: [
+     {
+                path: "/",
+                element: <Home />,
+            },
 
   {
     path: "/product/:productId",
@@ -70,4 +74,6 @@ export const routes = createBrowserRouter([
       
     ],
   },
+  ]
+}
 ]);

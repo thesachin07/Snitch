@@ -54,7 +54,7 @@ const Home = () => {
             </p>
           </div>
 
-          {/* ── Product Grid ── */}
+          
           {products && products.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16 pb-32">
               {products.map((product) => {
@@ -69,7 +69,7 @@ const Home = () => {
                     key={product._id}
                     className="group cursor-pointer flex flex-col"
                   >
-                    {/* Image Container */}
+                  
                     <div
                       className="aspect-[4/5] overflow-hidden mb-6"
                       style={{ backgroundColor: "#f5f3f0" }}
@@ -136,7 +136,7 @@ const Home = () => {
           )}
         </div>
 
-        {/* ── Footer ── */}
+      
         <footer
           className="border-t py-12 text-center"
           style={{ borderColor: "#e4e2df" }}

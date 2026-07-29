@@ -2,27 +2,35 @@ import useAppStore from "../../../app/app.store";
 import { addItemToCart, getCart } from "../service/cart.api";
 
 export const useCart = () => {
-
-    const addItemToStore = useAppStore((state) => state.addItem);
     const setCartInStore = useAppStore((state) => state.setCart);
 
     async function handleAddItem({ productId, variantId }) {
-        const data = await addItemToCart({ productId, variantId });
+        const response = await addItemToCart({ productId, variantId });
 
-        addItemToStore(data.item);  
-        return data;
+        if (!response?.success) {
+            return response;
+        }
+
+        const cartResponse = await getCart();
+        if (cartResponse?.cart) {
+            setCartInStore(cartResponse.cart);
+        }
+
+        return cartResponse;
     }
 
-   async function handleGetCart() {
+    async function handleGetCart() {
         const data = await getCart();
-      
-        if (setCartInStore) setCartInStore(data.cart); 
 
-        return data; 
+        if (data?.cart && setCartInStore) {
+            setCartInStore(data.cart);
+        }
+
+        return data;
     }
 
     return {
         handleAddItem,
-          handleGetCart,
+        handleGetCart,
     };
 };

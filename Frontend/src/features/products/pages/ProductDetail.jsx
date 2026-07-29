@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useProduct } from "../hooks/useProduct";
 import { useCart } from '../../cart/hooks/useCart';
 
 const ProductDetail = () => {
   const { productId } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -348,18 +349,22 @@ console.log({productId, activeVariant})
 
               <div className="flex flex-col gap-4 mt-auto">
                 <button
-                  className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300"
+                  className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300 active:scale-95 active:opacity-80 active:bg-[#333333]"
                   style={{
                     backgroundColor: "#1b1c1a",
                     color: "#fbf9f6",
                     fontFamily: "'Inter', sans-serif",
                   }}
-                  onClick={() =>
-                    handleAddItem({
+                  onClick={async () => {
+                    const response = await handleAddItem({
                       productId: product._id,
                       variantId: activeVariant?._id,
-                    })
-                  }
+                    });
+
+                    if (response?.success) {
+                      navigate('/cart');
+                    }
+                  }}
                 >
                   Add to Cart
                 </button>
