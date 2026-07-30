@@ -1,36 +1,86 @@
 import useAppStore from "../../../app/app.store";
-import { addItemToCart, getCart } from "../service/cart.api";
+import {
+  addItemToCart,
+  getCart,
+  incrementCartItemApi,
+  decrementCartItemApi,
+  removeCartItemApi,
+} from "../service/cart.api";
 
 export const useCart = () => {
-    const setCartInStore = useAppStore((state) => state.setCart);
+  const setCartInStore = useAppStore((state) => state.setCart);
 
-    async function handleAddItem({ productId, variantId }) {
-        const response = await addItemToCart({ productId, variantId });
+  async function handleAddItem({ productId, variantId }) {
+    const response = await addItemToCart({ productId, variantId });
 
-        if (!response?.success) {
-            return response;
-        }
-
-        const cartResponse = await getCart();
-        if (cartResponse?.cart) {
-            setCartInStore(cartResponse.cart);
-        }
-
-        return cartResponse;
+    if (!response?.success) {
+      return response;
     }
 
-    async function handleGetCart() {
-        const data = await getCart();
-
-        if (data?.cart && setCartInStore) {
-            setCartInStore(data.cart);
-        }
-
-        return data;
+    if (response?.cart) {
+      setCartInStore(response.cart);
     }
 
-    return {
-        handleAddItem,
-        handleGetCart,
-    };
+    return response;
+  }
+
+  async function handleGetCart() {
+    const data = await getCart();
+
+    if (data?.cart && setCartInStore) {
+      setCartInStore(data.cart);
+    }
+
+    return data;
+  }
+
+  async function handleIncrementCartItem({ productId, variantId }) {
+    const response = await incrementCartItemApi({ productId, variantId });
+
+    if (!response?.success) {
+      return response;
+    }
+
+    if (response?.cart) {
+      setCartInStore(response.cart);
+    }
+
+    return response;
+  }
+
+  async function handleDecrementCartItem({ productId, variantId }) {
+    const response = await decrementCartItemApi({ productId, variantId });
+
+    if (!response?.success) {
+      return response;
+    }
+
+    if (response?.cart) {
+      setCartInStore(response.cart);
+    }
+
+    return response;
+  }
+
+  async function handleRemoveCartItem({ productId, variantId }) {
+    const response = await removeCartItemApi({ productId, variantId });
+
+    if (!response?.success) {
+      return response;
+    }
+
+    if (response?.cart) {
+      setCartInStore(response.cart);
+    }
+
+    return response;
+  }
+
+  return {
+    handleAddItem,
+    handleGetCart,
+    handleIncrementCartItem,
+    handleDecrementCartItem,
+    handleRemoveCartItem,
+  };
 };

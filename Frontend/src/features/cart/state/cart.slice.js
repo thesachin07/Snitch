@@ -1,129 +1,105 @@
-const getCartTotal = (items = []) =>
-    items.reduce((sum, item) => {
-        const priceAmount = item?.price?.amount ?? item?.product?.price?.amount ?? 0;
-        return sum + Number(priceAmount) * Number(item?.quantity ?? 1);
-    }, 0);
+const calculateTotalPrice = (items) => {
+  if (!Array.isArray(items)) return 0;
+  return items.reduce((total, item) => {
+    const amount = Number(item.price?.amount ?? 0);
+    const quantity = Number(item.quantity ?? 0);
+    return total + amount * quantity;
+  }, 0);
+};
 
-const getCartItemId = (item) =>
-    item?._id ??
-    (typeof item?.product === 'string'
-        ? `${item.product}-${item.variant ?? 'unknown'}`
-        : `${item?.product?._id ?? 'unknown'}-${item?.variant ?? 'unknown'}`);
-
-const getQuantitiesMap = (items = []) =>
-    items.reduce((acc, item) => {
-        const itemId = getCartItemId(item);
-        acc[itemId] = item?.quantity ?? 1;
-        return acc;
-    }, {});
+const normalizeCart = (cart) => ({
+  ...cart,
+  items: Array.isArray(cart.items) ? cart.items : [],
+  totalPrice: calculateTotalPrice(cart.items),
+});
 
 export const createCartSlice = (set) => ({
-    cart: {
-        items: [],
-        totalPrice: 0,
-        currency: 'INR',
-    },
-    quantities: {},
+  cart: {
+    items: [],
+    totalPrice: 0,
+    currency: "INR",
+  },
+  quantities: {},
 
-    setCart: (cart) =>
-        set((state) => ({
-            cart: {
-                ...state.cart,
-                ...(cart ?? {}),
-                items: cart?.items ?? [],
-                totalPrice: cart?.totalPrice ?? getCartTotal(cart?.items ?? []),
-                currency: cart?.currency ?? state.cart.currency ?? 'INR',
-            },
-            quantities: getQuantitiesMap(cart?.items ?? []),
-        })),
+  setCart: (cart) =>
+    set({
+      cart: normalizeCart(cart),
+      quantities: {},
+    }),
 
-    addItem: (item) =>
-        set((state) => {
-            const existingItemIndex = state.cart.items.findIndex((existingItem) => {
-                const existingProductId =
-                    typeof existingItem?.product === 'string'
-                        ? existingItem.product
-                        : existingItem?.product?._id;
+  addItem: (item) =>
+    set((state) => {
+      const items = [...state.cart.items, item];
+      return {
+        cart: {
+          ...state.cart,
+          items,
+          totalPrice: calculateTotalPrice(items),
+        },
+      };
+    }),
 
-                return (
-                    existingProductId === (typeof item?.product === 'string' ? item.product : item?.product?._id) &&
-                    existingItem?.variant === item?.variant
-                );
-            });
+  incrementCartItem: ({ itemId }) =>
+    set((state) => {
+      const items = state.cart.items.map((item) =>
+        item._id === itemId
+          ? { ...item, quantity: Number(item.quantity ?? 0) + 1 }
+          : item,
+      );
+      return {
+        cart: {
+          ...state.cart,
+          items,
+          totalPrice: calculateTotalPrice(items),
+        },
+      };
+    }),
 
-            const nextItems = existingItemIndex > -1
-                ? state.cart.items.map((existingItem, index) =>
-                    index === existingItemIndex
-                        ? { ...existingItem, quantity: (existingItem.quantity ?? 1) + (item?.quantity ?? 1) }
-                        : existingItem
-                )
-                : [...state.cart.items, item];
+  decrementCartItem: ({ itemId }) =>
+    set((state) => {
+      const items = state.cart.items
+        .map((item) =>
+          item._id === itemId
+            ? { ...item, quantity: Math.max(Number(item.quantity ?? 1) - 1, 0) }
+            : item,
+        )
+        .filter((item) => item.quantity > 0);
+      return {
+        cart: {
+          ...state.cart,
+          items,
+          totalPrice: calculateTotalPrice(items),
+        },
+      };
+    }),
 
-            return {
-                cart: {
-                    ...state.cart,
-                    items: nextItems,
-                    totalPrice: getCartTotal(nextItems),
-                },
-                quantities: getQuantitiesMap(nextItems),
-            };
-        }),
+  removeCartItem: ({ itemId }) =>
+    set((state) => {
+      const items = state.cart.items.filter((item) => item._id !== itemId);
+      return {
+        cart: {
+          ...state.cart,
+          items,
+          totalPrice: calculateTotalPrice(items),
+        },
+      };
+    }),
 
-    incrementCartItem: (itemId) =>
-        set((state) => {
-            const nextItems = state.cart.items.map((item) =>
-                item._id === itemId
-                    ? {
-                          ...item,
-                          quantity: (item.quantity ?? 1) + 1,
-                      }
-                    : item
-            );
-
-            return {
-                cart: {
-                    ...state.cart,
-                    items: nextItems,
-                    totalPrice: getCartTotal(nextItems),
-                },
-                quantities: getQuantitiesMap(nextItems),
-            };
-        }),
-
-    changeQty: (itemId, delta) =>
-        set((state) => {
-            const nextItems = state.cart.items
-                .map((item) => {
-                    if (item._id !== itemId) {
-                        return item;
-                    }
-
-                    const nextQuantity = (item.quantity ?? 1) + delta;
-                    return nextQuantity > 0 ? { ...item, quantity: nextQuantity } : null;
-                })
-                .filter(Boolean);
-
-            return {
-                cart: {
-                    ...state.cart,
-                    items: nextItems,
-                    totalPrice: getCartTotal(nextItems),
-                },
-                quantities: getQuantitiesMap(nextItems),
-            };
-        }),
-
-    removeCartItem: (itemId) =>
-        set((state) => {
-            const nextItems = state.cart.items.filter((item) => item._id !== itemId);
-
-            return {
-                cart: {
-                    ...state.cart,
-                    items: nextItems,
-                    totalPrice: getCartTotal(nextItems),
-                },
-                quantities: getQuantitiesMap(nextItems),
-            };
-        }),
+  changeQty: (itemId, delta) =>
+    set((state) => {
+      const items = state.cart.items
+        .map((item) =>
+          item._id === itemId
+            ? { ...item, quantity: Math.max(Number(item.quantity ?? 1) + delta, 0) }
+            : item,
+        )
+        .filter((item) => item.quantity > 0);
+      return {
+        cart: {
+          ...state.cart,
+          items,
+          totalPrice: calculateTotalPrice(items),
+        },
+      };
+    }),
 });

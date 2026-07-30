@@ -43,7 +43,7 @@ const cartItems = useAppStore((state) => state.cart.items);
                         <Link
                             to="/cart"
                             className="relative flex items-center hover:opacity-70 transition-opacity"
-                            style={{ color: '#1b1c1a' }}
+                            style={{ color: '#FAF9F6' }}
                             aria-label="Shopping cart"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
