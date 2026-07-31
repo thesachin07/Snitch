@@ -52,7 +52,7 @@ const navigate = useNavigate();
                         </span>
                     </div>
 
-                    {/* ── Page Header ── */}
+                    
                     <div className="pt-10 pb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 overflow-hidden">
                         <div>
                             <h1
@@ -61,7 +61,7 @@ const navigate = useNavigate();
                             >
                                 Your Vault
                             </h1>
-                            {/* Gold rule separator */}
+                            
                             <div className="mt-4 w-14 h-px" style={{ backgroundColor: '#C9A96E' }} />
                         </div>
 
@@ -86,7 +86,7 @@ const navigate = useNavigate();
                         </button>
                     </div>
 
-                    {/* ── Product Grid ── */}
+                    
                     {sellerProducts && sellerProducts.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-16 pb-24">
                             {sellerProducts.map(product => {
@@ -107,7 +107,7 @@ const navigate = useNavigate();
                                             />
                                         </div>
 
-                                        {/* Product Details */}
+                                        
                                         <div className="flex flex-col gap-2">
                                             <div className="flex items-start justify-between gap-4">
                                                 <h3

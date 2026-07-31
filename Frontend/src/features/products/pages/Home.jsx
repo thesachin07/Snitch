@@ -81,7 +81,7 @@ const Home = () => {
                       />
                     </div>
 
-                    {/* Product Details */}
+                    
                     <div className="flex flex-col gap-2">
                       <h3
                         className="text-xl leading-snug transition-colors duration-300 group-hover:text-[#C9A96E]"
