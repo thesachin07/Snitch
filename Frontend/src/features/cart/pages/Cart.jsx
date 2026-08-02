@@ -39,6 +39,7 @@ const Cart = () => {
         (variant) => variant._id?.toString() === variantId?.toString(),
       ) || null
     );
+    console.log("variantDetails", variantDetails);
   };
 
   const getDisplayImage = (product, variant) => {
