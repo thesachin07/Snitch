@@ -233,6 +233,16 @@ const Cart = () => {
                             {product?.title}
                           </h2>
 
+                          {/* Description */}
+                          {product?.description && (
+                            <p
+                              className="text-sm leading-relaxed mb-4"
+                              style={{ color: tokens.muted }}
+                            >
+                              {product.description}
+                            </p>
+                          )}
+
                           {/* Variant Attribute Chips */}
                           {Object.keys(attributes).length > 0 && (
                             <div className="flex flex-wrap gap-2 mb-3">
