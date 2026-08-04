@@ -78,6 +78,7 @@ export const login = async (req, res) => {
         await sendTokenResponse(user, res, "User logged in successfully")
     } catch (error) {
         console.error(error);
+        
         return res.status(500).json({ message: "Server error" });
     }
 };
