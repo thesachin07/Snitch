@@ -177,17 +177,21 @@ const Cart = () => {
                   const {
                     product,
                     variant: variantId,
-                    price,
+                    price: snapshotPrice,
                     _id: itemId,
                   } = item;
                   const variantDetail = getVariantDetails(product, variantId);
                   const imageUrl = getDisplayImage(product, variantDetail);
-                  const displayPrice =
-                    variantDetail?.price ?? price ?? product?.price;
+                  const currentPrice =
+                    variantDetail?.price ?? item.currentPrice ?? product?.price ?? snapshotPrice;
+                  const displayPrice = currentPrice;
                   const qty = item.quantity ?? 1;
                   const attributes = variantDetail?.attributes ?? {};
                   const stock = variantDetail?.stock;
-                  const variantPrice = variantDetail?.price;
+                  const isPriceChanged =
+                    snapshotPrice &&
+                    currentPrice &&
+                    snapshotPrice.amount !== currentPrice.amount;
 
                   return (
                     <div
@@ -284,33 +288,25 @@ const Cart = () => {
                             </p>
                           )}
 
-                          {variantPrice &&
-                            displayPrice.amount !== variantPrice.amount && (
-                              <>
-                                {displayPrice.amount > variantPrice.amount ? (
-                                  <p className="text-[10px] uppercase tracking-[0.15em] mb-4 text-green-800 font-bold">
-                                    You will get this at{" "}
-                                    {formatCurrency(
-                                      variantPrice.amount,
-                                      variantPrice.currency,
-                                    )}{" "}
-                                    save{" "}
-                                    {Math.abs(
-                                      variantPrice.amount - displayPrice.amount,
-                                    )}
-                                    .
-                                  </p>
-                                ) : (
-                                  <p className="text-[10px] uppercase tracking-[0.15em] mb-4 text-red-600 font-bold">
-                                    Warning this product will cost you{" "}
-                                    {Math.abs(
-                                      variantPrice.amount - displayPrice.amount,
-                                    )}{" "}
-                                    more.
-                                  </p>
-                                )}
-                              </>
-                            )}
+                          {isPriceChanged && (
+                            <>
+                              {currentPrice.amount < snapshotPrice.amount ? (
+                                <p className="text-[10px] uppercase tracking-[0.15em] mb-4 text-green-800 font-bold">
+                                  Price has dropped to {formatCurrency(
+                                    currentPrice.amount,
+                                    currentPrice.currency,
+                                  )}.
+                                </p>
+                              ) : (
+                                <p className="text-[10px] uppercase tracking-[0.15em] mb-4 text-red-600 font-bold">
+                                  Current price is {formatCurrency(
+                                    currentPrice.amount,
+                                    currentPrice.currency,
+                                  )}, which is higher than the price at add time.
+                                </p>
+                              )}
+                            </>
+                          )}
                         </div>
 
                         {/* Bottom Row: Quantity + Remove */}

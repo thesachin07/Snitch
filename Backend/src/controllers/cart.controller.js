@@ -3,11 +3,28 @@ import productModel from "../models/product.model.js";
 import { stockOfVariant } from "../dao/product.dao.js";
 import mongoose from "mongoose";
 
+const getItemCurrentPrice = (item) => {
+  if (!item) return null;
+  const product = item.product;
+  const variantId = item.variant?.toString();
+
+  if (product?.variants?.length) {
+    const currentVariant = product.variants.find(
+      (variant) => variant._id?.toString() === variantId,
+    );
+    if (currentVariant?.price) return currentVariant.price;
+  }
+
+  if (product?.price) return product.price;
+  return item.price ?? null;
+};
+
 const calculateCartTotal = (cart) => {
   if (!cart?.items?.length) return 0;
 
   return cart.items.reduce((total, item) => {
-    const amount = Number(item.price?.amount ?? 0);
+    const currentPrice = getItemCurrentPrice(item);
+    const amount = Number(currentPrice?.amount ?? 0);
     const quantity = Number(item.quantity ?? 0);
     return total + amount * quantity;
   }, 0);
@@ -18,6 +35,12 @@ const buildCartResponse = async (cart) => {
 
   await cart.populate("items.product");
   const cartObj = cart.toObject();
+  cartObj.items = Array.isArray(cartObj.items)
+    ? cartObj.items.map((item) => ({
+        ...item,
+        currentPrice: getItemCurrentPrice(item),
+      }))
+    : [];
   cartObj.totalPrice = calculateCartTotal(cartObj);
   return cartObj;
 };
@@ -138,10 +161,21 @@ export const getCart = async (req, res) => {
 
     {
       $addFields: {
+        currentPrice: {
+          $ifNull: [
+            "$product.variants.price",
+            "$product.price",
+          ],
+        },
         itemTotal: {
           $multiply: [
             "$items.quantity",
-            "$items.price.amount",
+            {
+              $ifNull: [
+                "$product.variants.price.amount",
+                "$product.price.amount",
+              ],
+            },
           ],
         },
       },
@@ -153,7 +187,7 @@ export const getCart = async (req, res) => {
 
     itemTotal: 1,
 
-    currency: "$items.price.currency",
+    currency: "$currentPrice.currency",
 
     item: {
       _id: "$items._id",
@@ -161,6 +195,8 @@ export const getCart = async (req, res) => {
       quantity: "$items.quantity",
 
       price: "$items.price",
+
+      currentPrice: "$currentPrice",
 
       product: {
         _id: "$product._id",

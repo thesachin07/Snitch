@@ -1,7 +1,9 @@
 const calculateTotalPrice = (items) => {
   if (!Array.isArray(items)) return 0;
   return items.reduce((total, item) => {
-    const amount = Number(item.price?.amount ?? 0);
+    const amount = Number(
+      item.currentPrice?.amount ?? item.price?.amount ?? 0,
+    );
     const quantity = Number(item.quantity ?? 0);
     return total + amount * quantity;
   }, 0);
