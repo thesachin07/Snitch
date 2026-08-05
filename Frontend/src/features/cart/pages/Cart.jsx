@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router";
 import useAppStore from "../../../app/app.store";
 import { useCart } from "../hooks/useCart";
 
-/* ─── Inline styles & tokens matching the "Avenue Montaigne" design system ─── */
 const tokens = {
   surface: "#fbf9f6",
   surfaceLow: "#f5f3f0",
@@ -23,7 +22,6 @@ const tokens = {
 const Cart = () => {
   const navigate = useNavigate();
 
-  /* ─── Zustand State & Actions ─── */
   const cart = useAppStore((state) => state.cart);
   const {
     handleGetCart,
@@ -36,7 +34,6 @@ const Cart = () => {
     handleGetCart();
   }, []);
 
-  /* ─── Helpers ─── */
   const getVariantDetails = (product, variantId) => {
     if (!product?.variants || !variantId) return null;
     return (
@@ -55,7 +52,6 @@ const Cart = () => {
   const formatCurrency = (amount, currency = "INR") =>
     `${currency} ${Number(amount).toLocaleString("en-IN")}`;
 
-  /* ─── Empty state ─── */
   if (!cart?.items?.length) {
     return (
       <>
@@ -70,7 +66,7 @@ const Cart = () => {
             fontFamily: "'Inter', sans-serif",
           }}
         >
-          {/* Nav */}
+          
           <nav
             className="px-8 lg:px-16 xl:px-24 pt-10 pb-6 flex items-center justify-between"
             style={{ borderBottom: `1px solid ${tokens.surfaceHighest}` }}
@@ -136,7 +132,7 @@ const Cart = () => {
 
   return (
     <>
-      {/* Google Fonts */}
+      
       <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet"
@@ -152,9 +148,9 @@ const Cart = () => {
         {/* ── Main Content ── */}
         <div className="max-w-7xl mx-auto px-8 lg:px-16 xl:px-24 pt-12 lg:pt-20">
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-start">
-            {/* LEFT COLUMN — Cart Items (65%) */}
+            
             <div className="w-full lg:w-[65%]">
-              {/* Heading */}
+              
               <div className="mb-10">
                 <h1
                   className="font-light leading-[1.05] mb-2"
@@ -175,7 +171,7 @@ const Cart = () => {
                 </p>
               </div>
 
-              {/* ── Cart Item List ── */}
+              
               <div className="flex flex-col gap-6">
                 {cart.items.map((item) => {
                   const {
@@ -206,7 +202,7 @@ const Cart = () => {
                       className="flex gap-6 md:gap-8 p-6 md:p-8 transition-all duration-300"
                       style={{ backgroundColor: tokens.surfaceLow }}
                     >
-                      {/* Product Image */}
+                     
                       <div
                         className="flex-shrink-0 overflow-hidden"
                         style={{
@@ -229,10 +225,10 @@ const Cart = () => {
                         )}
                       </div>
 
-                      {/* Product Info */}
+                    
                       <div className="flex-1 flex flex-col justify-between">
                         <div>
-                          {/* Title */}
+                         
                           <h2
                             className="font-light leading-tight mb-3"
                             style={{
@@ -244,7 +240,7 @@ const Cart = () => {
                             {product?.title}
                           </h2>
 
-                          {/* Description */}
+                         
                           {product?.description && (
                             <p
                               className="text-sm leading-relaxed mb-4"
@@ -254,7 +250,7 @@ const Cart = () => {
                             </p>
                           )}
 
-                          {/* Variant Attribute Chips */}
+                          
                           {Object.keys(attributes).length > 0 && (
                             <div className="flex flex-wrap gap-2 mb-3">
                               {Object.entries(attributes).map(([key, val]) => (
@@ -272,7 +268,6 @@ const Cart = () => {
                             </div>
                           )}
 
-                          {/* Price */}
                           <p
                             className="text-[11px] uppercase tracking-[0.2em] font-medium mb-1"
                             style={{ color: tokens.onSurface }}
@@ -285,7 +280,7 @@ const Cart = () => {
                               : "—"}
                           </p>
 
-                          {/* Stock */}
+                          
                           {stock !== undefined && (
                             <p
                               className="text-[10px] uppercase tracking-[0.15em] mb-4"
@@ -318,9 +313,9 @@ const Cart = () => {
 )}
                         </div>
 
-                        {/* Bottom Row: Quantity + Remove */}
+                       
                         <div className="flex items-center justify-between flex-wrap gap-4">
-                          {/* Quantity Stepper */}
+                          
                           <div
                             className="flex items-center"
                             style={{
@@ -369,7 +364,6 @@ const Cart = () => {
                             </button>
                           </div>
 
-                          {/* Remove */}
                           <button
                             id={`remove-${itemId}`}
                             onClick={() =>
@@ -390,7 +384,7 @@ const Cart = () => {
                 })}
               </div>
 
-              {/* Policy strip */}
+              
               <div
                 className="mt-10 pt-8 grid grid-cols-3 gap-4 text-[10px] uppercase tracking-[0.12em]"
                 style={{
@@ -528,7 +522,7 @@ const Cart = () => {
                   </span>
                 </div>
 
-                {/* Continue CTA */}
+                
                 <button
                   id="continue-shopping"
                   className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300"
@@ -549,7 +543,6 @@ const Cart = () => {
                   Continue Shopping
                 </button>
 
-                {/* Policy footnote */}
                 <p
                   className="mt-6 text-center text-[9px] uppercase tracking-[0.14em] leading-relaxed"
                   style={{ color: tokens.muted }}
