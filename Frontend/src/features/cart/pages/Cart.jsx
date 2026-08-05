@@ -25,7 +25,12 @@ const Cart = () => {
 
   /* ─── Zustand State & Actions ─── */
   const cart = useAppStore((state) => state.cart);
-  const { handleGetCart, handleIncrementCartItem, handleDecrementCartItem, handleRemoveCartItem } = useCart();
+  const {
+    handleGetCart,
+    handleIncrementCartItem,
+    handleDecrementCartItem,
+    handleRemoveCartItem,
+  } = useCart();
 
   useEffect(() => {
     handleGetCart();
@@ -39,7 +44,6 @@ const Cart = () => {
         (variant) => variant._id?.toString() === variantId?.toString(),
       ) || null
     );
-    
   };
 
   const getDisplayImage = (product, variant) => {
@@ -183,7 +187,10 @@ const Cart = () => {
                   const variantDetail = getVariantDetails(product, variantId);
                   const imageUrl = getDisplayImage(product, variantDetail);
                   const currentPrice =
-                    variantDetail?.price ?? item.currentPrice ?? product?.price ?? snapshotPrice;
+                    variantDetail?.price ??
+                    item.currentPrice ??
+                    product?.price ??
+                    snapshotPrice;
                   const displayPrice = currentPrice;
                   const qty = item.quantity ?? 1;
                   const attributes = variantDetail?.attributes ?? {};
@@ -289,24 +296,26 @@ const Cart = () => {
                           )}
 
                           {isPriceChanged && (
-                            <>
-                              {currentPrice.amount < snapshotPrice.amount ? (
-                                <p className="text-[10px] uppercase tracking-[0.15em] mb-4 text-green-800 font-bold">
-                                  Price has dropped to {formatCurrency(
-                                    currentPrice.amount,
-                                    currentPrice.currency,
-                                  )}.
-                                </p>
-                              ) : (
-                                <p className="text-[10px] uppercase tracking-[0.15em] mb-4 text-red-600 font-bold">
-                                  Current price is {formatCurrency(
-                                    currentPrice.amount,
-                                    currentPrice.currency,
-                                  )}, which is higher than the price at add time.
-                                </p>
-                              )}
-                            </>
-                          )}
+  <>
+    {currentPrice.amount < snapshotPrice.amount ? (
+      <p className="text-[10px] uppercase tracking-[0.15em] mb-4 text-green-600 font-bold">
+        You will get this at{" "}
+        {formatCurrency(currentPrice.amount, currentPrice.currency)}.
+        Save{" "}
+        {formatCurrency(
+          snapshotPrice.amount - currentPrice.amount,
+          currentPrice.currency
+        )}
+      </p>
+    ) : (
+      <p className="text-[10px] uppercase tracking-[0.15em] mb-4 text-red-500 font-bold">
+        Warning! Now, This product will cost you{" "}
+        {formatCurrency(currentPrice.amount, currentPrice.currency)}.
+
+      </p>
+    )}
+  </>
+)}
                         </div>
 
                         {/* Bottom Row: Quantity + Remove */}
