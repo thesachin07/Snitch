@@ -35,3 +35,21 @@ export const removeCartItemApi = async ({ productId, variantId }) => {
   );
   return response.data;
 };
+
+// export const createCartOrder = async () => {
+//   const response = await cartApiInstance.post("/payment/create/")
+//   return response.data
+// }
+
+
+export const createCartOrder = async (orderData) => {
+  try {
+    // send order data to the backend endpoint that creates an order
+    const response = await cartApiInstance.post("/payment/create/order", orderData || {});
+    console.log("Cart Order Response Data:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error.response?.status, error.message);
+    throw error;
+  }
+};

@@ -28,6 +28,8 @@ const Cart = () => {
     handleIncrementCartItem,
     handleDecrementCartItem,
     handleRemoveCartItem,
+    handleCreateCartOrder,
+    handleVerifyCartOrder
   } = useCart();
 
   useEffect(() => {
@@ -51,6 +53,14 @@ const Cart = () => {
 
   const formatCurrency = (amount, currency = "INR") =>
     `${currency} ${Number(amount).toLocaleString("en-IN")}`;
+
+  const handleCheckout = async () => {
+ 
+    const order = await handleCreateCartOrder();
+    console.log(order);
+  
+
+};
 
   if (!cart?.items?.length) {
     return (
@@ -129,6 +139,7 @@ const Cart = () => {
       </>
     );
   }
+
 
   return (
     <>
@@ -538,7 +549,7 @@ const Cart = () => {
                     e.currentTarget.style.backgroundColor = tokens.onSurface;
                     e.currentTarget.style.color = tokens.surface;
                   }}
-                  onClick={() => navigate("/")}
+                  onClick={handleCheckout}
                 >
                   Continue Shopping
                 </button>
@@ -556,6 +567,6 @@ const Cart = () => {
       </div>
     </>
   );
-};
+}
 
 export default Cart;

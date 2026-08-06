@@ -7,6 +7,7 @@ import {
   incrementCartItemQuantity,
   decrementCartItemQuantity,
   removeCartItem,
+ createOrderController
 } from '../controllers/cart.controller.js';
 
 const router = express.Router();
@@ -27,4 +28,5 @@ router.delete(
   removeCartItem,
 );
 
+router.post("/payment/create/order", authenticateUser, createOrderController);
 export default router;

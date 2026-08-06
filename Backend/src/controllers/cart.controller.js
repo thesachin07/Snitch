@@ -2,6 +2,7 @@ import cartModel from "../models/cart.model.js";
 import productModel from "../models/product.model.js";
 import { stockOfVariant } from "../dao/product.dao.js";
 import mongoose from "mongoose";
+import { createRazorpayOrder } from "../services/payment.service.js";
 
 const getItemCurrentPrice = (item) => {
   if (!item) return null;
@@ -399,4 +400,23 @@ export const removeCartItem = async (req, res) => {
     success: true,
     cart: responseCart,
   });
+};
+
+export const createOrderController = async (req, res) => {
+  try {
+    const { amount = 1000, currency = "INR" } = req.body ?? {};
+    const order = await createRazorpayOrder(Number(amount), currency);
+    return res.status(200).json({
+      message: "Order created successfully",
+      success: true,
+      order,
+    });
+  } catch (error) {
+    console.error("Create order error:", error.message || error);
+    return res.status(500).json({
+      message: "Failed to create order",
+      success: false,
+      error: error.message || String(error),
+    });
+  }
 };
