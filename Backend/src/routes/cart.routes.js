@@ -7,26 +7,33 @@ import {
   incrementCartItemQuantity,
   decrementCartItemQuantity,
   removeCartItem,
- createOrderController
+ createOrderController,
+  verifyOrderController,
 } from '../controllers/cart.controller.js';
 
 const router = express.Router();
 
 router.post('/add/:productId/:variantId', authenticateUser, validateAddToCart, addToCart);
+
 router.get('/', authenticateUser, getCart);
+
 router.patch("/quantity/increment/:productId/:variantId", authenticateUser, validateIncremetCartItemsQuantity, incrementCartItemQuantity);
-router.patch(
-  "/quantity/decrement/:productId/:variantId",
+
+router.patch("/quantity/decrement/:productId/:variantId",
   authenticateUser,
   validateIncremetCartItemsQuantity,
   decrementCartItemQuantity,
 );
-router.delete(
-  "/remove/:productId/:variantId",
+
+router.delete("/remove/:productId/:variantId",
   authenticateUser,
   validateIncremetCartItemsQuantity,
   removeCartItem,
 );
 
 router.post("/payment/create/order", authenticateUser, createOrderController);
+
+router.post("/payment/verify/order", authenticateUser, verifyOrderController);
+
 export default router;
+

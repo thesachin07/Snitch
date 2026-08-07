@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import useAppStore from "../../../app/app.store";
 import { useCart } from "../hooks/useCart";
+import { useRazorpay } from "react-razorpay";
+
 
 const tokens = {
   surface: "#fbf9f6",
@@ -23,6 +25,8 @@ const Cart = () => {
   const navigate = useNavigate();
 
   const cart = useAppStore((state) => state.cart);
+    const user = useAppStore((state) => state.user);
+
   const {
     handleGetCart,
     handleIncrementCartItem,
@@ -31,6 +35,7 @@ const Cart = () => {
     handleCreateCartOrder,
     handleVerifyCartOrder
   } = useCart();
+  const { error, isLoading, Razorpay } = useRazorpay();
 
   useEffect(() => {
     handleGetCart();
@@ -54,12 +59,49 @@ const Cart = () => {
   const formatCurrency = (amount, currency = "INR") =>
     `${currency} ${Number(amount).toLocaleString("en-IN")}`;
 
-  const handleCheckout = async () => {
- 
+const handleCheckout = async () => {
+  try {
     const order = await handleCreateCartOrder();
-    console.log(order);
-  
+    const razorpayOrder = order?.order;
 
+    console.log(order);
+    console.log("Razorpay order object:", razorpayOrder);
+
+    if (!razorpayOrder) {
+      throw new Error("Failed to create Razorpay order");
+    }
+
+    const options = {
+      key: "rzp_test_S7J79yzZG11lvT",
+      amount: razorpayOrder.amount,
+      currency: razorpayOrder.currency,
+      name: "Snitch",
+      description: "Test Transaction",
+      order_id: razorpayOrder.id,
+      handler: async (response) => {
+        const isValid = await handleVerifyCartOrder(response);
+
+        if (isValid) {
+console.log("Order verified successfully")        }
+      },
+      prefill: {
+        name: user?.fullname,
+        email: user?.email,
+        contact: user?.contact,
+      },
+      theme: {
+        color: tokens.primary,
+      },
+    };
+
+        const razorpayInstance = new Razorpay(options);
+        razorpayInstance.open();
+    
+  }catch (error) {
+    console.error("Failed to create order:",
+      error.response?.data || error.message
+    );
+  }
 };
 
   if (!cart?.items?.length) {
@@ -551,7 +593,7 @@ const Cart = () => {
                   }}
                   onClick={handleCheckout}
                 >
-                  Continue Shopping
+                  Proceed to Checkout
                 </button>
 
                 <p
@@ -567,6 +609,6 @@ const Cart = () => {
       </div>
     </>
   );
-}
+};
 
 export default Cart;

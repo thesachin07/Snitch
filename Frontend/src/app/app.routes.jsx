@@ -68,12 +68,9 @@ export const routes = createBrowserRouter([
         element: 
           <Protected role="seller">
             <SellerProductDetails />
-          </Protected>       
-      },
-
+          </Protected>   
+}, 
       
-    ],
-  },
-  ]
+    ]
 }
-]);
+]}])
