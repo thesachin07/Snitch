@@ -10,6 +10,7 @@ import SellerProductDetails from "../features/products/pages/SellerProductDetail
 import Protected from "../features/auth/components/Protected.jsx";
 import AppLayout from "./AppLayout.jsx";
 import { Children } from "react";
+import OrderSuccess from "../features/cart/pages/OrderSuccess.jsx";
 
 export const routes = createBrowserRouter([
    {
@@ -39,6 +40,11 @@ export const routes = createBrowserRouter([
         element: <Protected> 
           <Cart />
         </Protected>
+      },
+
+      {
+        path: "order-success",
+        element: <OrderSuccess />
       },
 
 

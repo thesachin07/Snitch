@@ -82,7 +82,7 @@ const handleCheckout = async () => {
         const isValid = await handleVerifyCartOrder(response);
 
         if (isValid) {
-console.log("Order verified successfully")        }
+ navigate(`/order-success?order_id=${response?.razorpay_order_id}`)}
       },
       prefill: {
         name: user?.fullname,
