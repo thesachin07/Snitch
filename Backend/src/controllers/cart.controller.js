@@ -443,3 +443,34 @@ export const verifyOrderController = async (req, res) => {
         success: true
     });
 };
+
+export const getOrderByIdController = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await paymentModel.findOne({
+      "razorpay.orderId": orderId,
+      user: req.user._id,
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      order,
+    });
+
+  } catch (error) {
+    console.error("Get order error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch order",
+    });
+  }
+};
