@@ -58,7 +58,7 @@ export const verifyCartOrder = async ({ razorpay_order_id, razorpay_payment_id, 
 }
 
 export const getOrderById = async (orderId) => {
-  const response = await cartApiInstance.get(`/order/${orderId}`);
+  const response = await cartApiInstance.get(`/order/${encodeURIComponent(orderId)}`);
   return response.data;
 };
 
@@ -66,3 +66,4 @@ export const getMyOrders = async () => {
   const response = await cartApiInstance.get("/orders");
   return response.data;
 };
+

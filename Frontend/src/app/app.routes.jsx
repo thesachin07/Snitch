@@ -12,6 +12,7 @@ import AppLayout from "./AppLayout.jsx";
 import { Children } from "react";
 import OrderSuccess from "../features/cart/pages/OrderSuccess.jsx";
 import Orders from "../features/cart/pages/Order.jsx";
+import OrderDetails from "../features/cart/pages/OrderDetail.jsx"
 
 export const routes = createBrowserRouter([
    {
@@ -51,6 +52,11 @@ export const routes = createBrowserRouter([
   path: "/orders",
    element: <Orders />
    },
+
+  {
+    path: "/order/:orderId",
+    element: <OrderDetails />
+  },
 
   {
     path: "/seller",

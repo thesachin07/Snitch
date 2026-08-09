@@ -152,7 +152,7 @@ const Orders = () => {
             /* Orders */
             <div className="flex flex-col gap-6">
               {orders.map((order) => {
-
+                const orderId = order?.razorpay?.orderId || order?._id || order?.id;
                 const amount = order?.price?.amount ?? 0;
                 const currency = order?.price?.currency ?? "INR";
 
@@ -310,7 +310,7 @@ const Orders = () => {
 
                     {/* Details */}
                     <Link
-                        to={`/order/${order._id}`}
+                        to={`/order/${orderId}`}
                         className="px-6 py-3 text-center text-[9px] uppercase tracking-[0.2em] transition-all duration-300"
                         style={{
                           border: `1px solid ${tokens.outline}`,
