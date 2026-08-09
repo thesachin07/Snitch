@@ -7,11 +7,20 @@ import paymentModel from "../models/payment.model.js";
 import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils.js";
 import { config } from "../config/config.js";
 
-
+const getUpdatedCart = async userId => {
+    return (
+        (await getCartDetails(userId)) || {
+            totalPrice: 0,
+            currency: null,
+            items: []
+        }
+    );
+};
 
 export const addToCart = async (req, res) => {
     const { productId, variantId } = req.params;
-    const { quantity = 1 } = req.body;
+    const { quantity } = req.body || {};
+    const quantityValue = Number(quantity) || 1;
 
     const product = await productModel.findOne({
         _id: productId,
@@ -52,7 +61,7 @@ export const addToCart = async (req, res) => {
         const quantityInCart = cartItem.quantity;
 
 
-        if (quantityInCart + quantity > stock) {
+        if (quantityInCart + quantityValue > stock) {
             return res.status(400).json({
                 message: `Only ${stock} items left in stock. You already have ${quantityInCart} items in your cart`,
                 success: false
@@ -60,19 +69,21 @@ export const addToCart = async (req, res) => {
         }
 
 
-        cartItem.quantity += quantity;
+        cartItem.quantity += quantityValue;
 
         await cart.save();
+        const updatedCart = await getUpdatedCart(req.user._id);
 
         return res.status(200).json({
             message: "Cart updated successfully",
-            success: true
+            success: true,
+            cart: updatedCart
         });
     }
 
 
     // New item
-    if (quantity > stock) {
+    if (quantityValue > stock) {
         return res.status(400).json({
             message: `Only ${stock} items left in stock`,
             success: false
@@ -91,16 +102,17 @@ export const addToCart = async (req, res) => {
     cart.items.push({
         product: productId,
         variant: variantId,
-        quantity,
+        quantity: quantityValue,
         price
     });
 
     await cart.save();
-
+    const updatedCart = await getUpdatedCart(req.user._id);
 
     return res.status(200).json({
         message: "Product added to cart successfully",
-        success: true
+        success: true,
+        cart: updatedCart
     });
 };
 
@@ -188,11 +200,12 @@ export const incrementCartItemQuantity = async (req, res) => {
     cartItem.quantity += 1;
 
     await cart.save();
-
+    const updatedCart = await getUpdatedCart(req.user._id);
 
     return res.status(200).json({
         message: "Cart item quantity incremented successfully",
-        success: true
+        success: true,
+        cart: updatedCart
     });
 };
 
@@ -264,11 +277,12 @@ export const decrementCartItemQuantity = async (req, res) => {
 
 
     await cart.save();
-
+    const updatedCart = await getUpdatedCart(req.user._id);
 
     return res.status(200).json({
         message: "Cart item quantity decremented successfully",
-        success: true
+        success: true,
+        cart: updatedCart
     });
 };
 
@@ -310,11 +324,12 @@ export const removeCartItem = async (req, res) => {
     cart.items.splice(itemIndex, 1);
 
     await cart.save();
-
+    const updatedCart = await getUpdatedCart(req.user._id);
 
     return res.status(200).json({
         message: "Cart item removed successfully",
-        success: true
+        success: true,
+        cart: updatedCart
     });
 };
 
@@ -354,23 +369,35 @@ export const createOrderController = async (req, res) => {
             currency: cart.currency
         },
 
-        orderItems: cart.items.map(item => ({
+        orderItems: cart.items.map(item => {
+            const variant = item.product.variants?.find(
+                v => v._id.toString() === item.variant.toString()
+            );
 
-            title: item.product.title,
+            const variantAttributes = variant?.attributes;
+            const variantLabel = variantAttributes
+                ? Array.isArray(variantAttributes)
+                    ? variantAttributes.map(([key, value]) => `${key}: ${value}`).join(", ")
+                    : variantAttributes instanceof Map
+                        ? Array.from(variantAttributes.entries()).map(([key, value]) => `${key}: ${value}`).join(", ")
+                        : Object.entries(variantAttributes).map(([key, value]) => `${key}: ${value}`).join(", ")
+                : undefined;
 
-            productId: item.product._id,
+            const itemPrice = item.currentPrice || item.price;
+        const itemTotal = (itemPrice?.amount || 0) * item.quantity;
 
-            variantId: item.variant,
-
-            quantity: item.quantity,
-
-            images: item.product.images,
-
-            description: item.product.description,
-
-            price: item.currentPrice || item.price
-
-        }))
+        return {
+                title: item.product.title,
+                productId: item.product._id,
+                variantId: item.variant,
+                variant: variantLabel,
+                quantity: item.quantity,
+                images: item.product.images,
+                description: item.product.description,
+                price: itemPrice,
+                itemTotal
+            };
+        })
     });
 
 
@@ -471,6 +498,29 @@ export const getOrderByIdController = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Failed to fetch order",
+    });
+  }
+};
+
+export const getOrdersController = async (req, res) => {
+  try {
+    const orders = await paymentModel
+      .find({
+        user: req.user._id,
+        status: "paid",
+      })
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({
+      success: true,
+      orders,
+    });
+  } catch (error) {
+    console.error("Get orders error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch orders",
     });
   }
 };

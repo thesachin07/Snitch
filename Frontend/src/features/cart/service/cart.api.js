@@ -61,3 +61,8 @@ export const getOrderById = async (orderId) => {
   const response = await cartApiInstance.get(`/order/${orderId}`);
   return response.data;
 };
+
+export const getMyOrders = async () => {
+  const response = await cartApiInstance.get("/orders");
+  return response.data;
+};

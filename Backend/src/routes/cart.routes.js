@@ -9,7 +9,8 @@ import {
   removeCartItem,
  createOrderController,
   verifyOrderController,
-  getOrderByIdController
+  getOrderByIdController,
+  getOrdersController
 } from '../controllers/cart.controller.js';
 
 const router = express.Router();
@@ -37,6 +38,8 @@ router.post("/payment/create/order", authenticateUser, createOrderController);
 router.post("/payment/verify/order", authenticateUser, verifyOrderController);
 
 router.get("/order/:orderId", authenticateUser, getOrderByIdController);
+
+router.get("/orders", authenticateUser, getOrdersController);
 
 export default router;
 

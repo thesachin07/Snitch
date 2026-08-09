@@ -7,7 +7,8 @@ import {
   removeCartItemApi,
   createCartOrder,
   verifyCartOrder,
-  getOrderById
+  getOrderById,
+  getMyOrders
 } from "../service/cart.api";
 
 export const useCart = () => {
@@ -93,7 +94,11 @@ export const useCart = () => {
         const data = await getOrderById(orderId)
         return data
     }
-
+ async function handleGetMyOrders(){
+  const data = await getMyOrders()
+  return data
+ }
+    
   return {
     handleAddItem,
     handleGetCart,
@@ -102,6 +107,7 @@ export const useCart = () => {
     handleRemoveCartItem,
     handleCreateCartOrder,
     handleVerifyCartOrder,
-    handleGetOrderById
+    handleGetOrderById,
+    handleGetMyOrders
   };
 };

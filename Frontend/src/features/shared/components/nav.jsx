@@ -36,7 +36,7 @@ const cartItems = useAppStore((state) => state.cart.items);
             <div className="flex gap-6 items-center text-[10px] uppercase tracking-[0.2em] font-medium" style={{ color: '#7A6E63' }}>
                 {user ? (
                     <>
-                        <span style={{ color: '#1b1c1a' }}>{user.fullname}</span>
+                        <span style={{ color: '#FAF9F6' }}>{user.fullname}</span>
                         {user.role === 'seller' && (
                             <Link to="/seller/dashboard" className="transition-colors hover:text-[#C9A96E]">Seller Dashboard</Link>
                         )}
