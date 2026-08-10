@@ -15,7 +15,7 @@ const navigate = useNavigate();
         handleGetSellerProduct()
     }, [])
     
-  console.log("sellerProducts:", sellerProducts);
+//   console.log("sellerProducts:", sellerProducts);
 
    return (
     

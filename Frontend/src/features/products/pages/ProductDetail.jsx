@@ -46,15 +46,15 @@ const ProductDetail = () => {
     );
   }, [product, selectedAttributes]);
 
-console.log({productId, activeVariant})
+// console.log({productId, activeVariant})
 
 
   useEffect(() => {
     if (product?.variants?.length > 0) {
-      console.log(
-        "Setting selected attributes:",
-        product.variants[0].attributes,
-      );
+      // console.log(
+      //   "Setting selected attributes:",
+      //   product.variants[0].attributes,
+      // );
 
       setSelectedAttributes(product.variants[0].attributes);
     }

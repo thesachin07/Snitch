@@ -339,9 +339,9 @@ export const createOrderController = async (req, res) => {
 
     const cart = await getCartDetails(req.user._id);
 
- console.log("CART:", cart);
-    console.log("TOTAL PRICE:", cart?.totalPrice);
-    console.log("CURRENCY:", cart?.currency);
+//  console.log("CART:", cart);
+//     console.log("TOTAL PRICE:", cart?.totalPrice);
+//     console.log("CURRENCY:", cart?.currency);
 
     if (!cart || cart.items.length === 0) {
         return res.status(400).json({

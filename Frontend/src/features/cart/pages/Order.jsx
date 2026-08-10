@@ -29,7 +29,7 @@ const Orders = () => {
       try {
         const response = await handleGetMyOrders();
 
-        console.log("Orders response:", response);
+        // console.log("Orders response:", response);
 
         if (response?.success) {
           setOrders(response.orders || []);

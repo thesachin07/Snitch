@@ -11,7 +11,7 @@ const Home = () => {
   useEffect(() => {
     handleGetAllProducts();
   }, []);
-  console.log(products);
+  // console.log(products);
 
 
   return (

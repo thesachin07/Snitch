@@ -63,8 +63,8 @@ const Cart = () => {
       const order = await handleCreateCartOrder();
       const razorpayOrder = order?.order;
 
-      console.log(order);
-      console.log("Razorpay order object:", razorpayOrder);
+      // console.log(order);
+      // console.log("Razorpay order object:", razorpayOrder);
 
       if (!razorpayOrder) {
         throw new Error("Failed to create Razorpay order");

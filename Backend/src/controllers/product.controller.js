@@ -78,8 +78,8 @@ export async function getAllProducts(req, res) {
 
  export async function addProductVariant(req, res){
 
-console.log("BODY:", req.body);
-    console.log("FILES:", req.files);
+// console.log("BODY:", req.body);
+//     console.log("FILES:", req.files);
 
         const productId = req.params.productId;
         const product = await productModel.findOne({
@@ -110,7 +110,7 @@ console.log("BODY:", req.body);
         const stock = req.body.stock
         const attributes = JSON.parse(req.body.attributes || "{}")
    
-    console.log(price)
+    // console.log(price)
 
     product.variants.push({
         images,

@@ -11,7 +11,7 @@ function App() {
   const { handleGetMe } = useAuth()
   const user = useAppStore((state) => state.user )
 
-  console.log(user)
+  // console.log(user)
 
   useEffect(() => {
     handleGetMe()

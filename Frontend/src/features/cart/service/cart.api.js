@@ -40,7 +40,7 @@ export const removeCartItemApi = async ({ productId, variantId }) => {
 export const createCartOrder = async (orderData) => {
   try {
     const response = await cartApiInstance.post("/payment/create/order", orderData || {});
-    console.log("Cart Order Response Data:", response.data);
+    // console.log("Cart Order Response Data:", response.data);
     return response.data;
   } catch (error) {
     console.error("API Error:", error.response?.status, error.message);

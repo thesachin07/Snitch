@@ -37,7 +37,7 @@ export async function createProduct(formData) {
 
     export async function addProductVariant(productId, newProductVariant) {
 
-          console.log(newProductVariant)
+        //   console.log(newProductVariant)
           
         const formData = new FormData()
 

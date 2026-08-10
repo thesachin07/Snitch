@@ -32,7 +32,7 @@ passport.use(
     },
     (accessToken, refreshToken, profile, done) => {
       console.log("Google Strategy Executed");
-      console.log(profile);
+      // console.log(profile);
 
       return done(null, profile);
     }
