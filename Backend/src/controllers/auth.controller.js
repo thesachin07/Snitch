@@ -9,11 +9,11 @@ async function sendTokenResponse(user, res, message) {
         { expiresIn: "7d" }
     );
 
-    res.cookie("token", token, {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
-    });
+   res.cookie("token", token, {
+    httpOnly: true,
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: process.env.NODE_ENV === "production",
+});
 
     return res.status(200).json({
         message,
@@ -118,7 +118,7 @@ export const googleCallback = async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       secure: process.env.NODE_ENV === "production",
     });
 
@@ -151,8 +151,8 @@ res.status(200).json({
 export const logout = async (req, res) => {
     res.clearCookie("token", {
         httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    secure: process.env.NODE_ENV === "production",
     });
 
     return res.status(200).json({
