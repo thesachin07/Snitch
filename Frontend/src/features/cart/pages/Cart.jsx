@@ -4,7 +4,6 @@ import useAppStore from "../../../app/app.store";
 import { useCart } from "../hooks/useCart";
 import { useRazorpay } from "react-razorpay";
 
-
 const tokens = {
   surface: "#fbf9f6",
   surfaceLow: "#f5f3f0",
@@ -25,7 +24,7 @@ const Cart = () => {
   const navigate = useNavigate();
 
   const cart = useAppStore((state) => state.cart);
-    const user = useAppStore((state) => state.user);
+  const user = useAppStore((state) => state.user);
 
   const {
     handleGetCart,
@@ -33,7 +32,7 @@ const Cart = () => {
     handleDecrementCartItem,
     handleRemoveCartItem,
     handleCreateCartOrder,
-    handleVerifyCartOrder
+    handleVerifyCartOrder,
   } = useCart();
   const { error, isLoading, Razorpay } = useRazorpay();
 
@@ -59,50 +58,51 @@ const Cart = () => {
   const formatCurrency = (amount, currency = "INR") =>
     `${currency} ${Number(amount).toLocaleString("en-IN")}`;
 
-const handleCheckout = async () => {
-  try {
-    const order = await handleCreateCartOrder();
-    const razorpayOrder = order?.order;
+  const handleCheckout = async () => {
+    try {
+      const order = await handleCreateCartOrder();
+      const razorpayOrder = order?.order;
 
-    console.log(order);
-    console.log("Razorpay order object:", razorpayOrder);
+      console.log(order);
+      console.log("Razorpay order object:", razorpayOrder);
 
-    if (!razorpayOrder) {
-      throw new Error("Failed to create Razorpay order");
+      if (!razorpayOrder) {
+        throw new Error("Failed to create Razorpay order");
+      }
+
+      const options = {
+        key: "rzp_test_S7J79yzZG11lvT",
+        amount: razorpayOrder.amount,
+        currency: razorpayOrder.currency,
+        name: "Snitch",
+        description: "Test Transaction",
+        order_id: razorpayOrder.id,
+        handler: async (response) => {
+          const isValid = await handleVerifyCartOrder(response);
+
+          if (isValid) {
+            navigate(`/order-success?order_id=${response?.razorpay_order_id}`);
+          }
+        },
+        prefill: {
+          name: user?.fullname,
+          email: user?.email,
+          contact: user?.contact,
+        },
+        theme: {
+          color: tokens.primary,
+        },
+      };
+
+      const razorpayInstance = new Razorpay(options);
+      razorpayInstance.open();
+    } catch (error) {
+      console.error(
+        "Failed to create order:",
+        error.response?.data || error.message,
+      );
     }
-
-    const options = {
-      key: "rzp_test_S7J79yzZG11lvT",
-      amount: razorpayOrder.amount,
-      currency: razorpayOrder.currency,
-      name: "Snitch",
-      description: "Test Transaction",
-      order_id: razorpayOrder.id,
-      handler: async (response) => {
-        const isValid = await handleVerifyCartOrder(response);
-
-        if (isValid) {
- navigate(`/order-success?order_id=${response?.razorpay_order_id}`)}
-      },
-      prefill: {
-        name: user?.fullname,
-        email: user?.email,
-        contact: user?.contact,
-      },
-      theme: {
-        color: tokens.primary,
-      },
-    };
-
-        const razorpayInstance = new Razorpay(options);
-        razorpayInstance.open();
-    
-  }catch (error) {
-    console.error("Failed to create order:",
-      error.response?.data || error.message
-    );
-  }
-};
+  };
 
   if (!cart?.items?.length) {
     return (
@@ -118,7 +118,6 @@ const handleCheckout = async () => {
             fontFamily: "'Inter', sans-serif",
           }}
         >
-          
           {/* <nav
             className="px-8 lg:px-16 xl:px-24 pt-10 pb-6 flex items-center justify-between"
             style={{ borderBottom: `1px solid ${tokens.surfaceHighest}` }}
@@ -182,10 +181,8 @@ const handleCheckout = async () => {
     );
   }
 
-
   return (
     <>
-      
       <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap"
         rel="stylesheet"
@@ -198,12 +195,9 @@ const handleCheckout = async () => {
           fontFamily: "'Inter', sans-serif",
         }}
       >
-        {/* ── Main Content ── */}
         <div className="max-w-7xl mx-auto px-8 lg:px-16 xl:px-24 pt-12 lg:pt-20">
           <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-start">
-            
             <div className="w-full lg:w-[65%]">
-              
               <div className="mb-10">
                 <h1
                   className="font-light leading-[1.05] mb-2"
@@ -224,7 +218,6 @@ const handleCheckout = async () => {
                 </p>
               </div>
 
-              
               <div className="flex flex-col gap-6">
                 {cart.items.map((item) => {
                   const {
@@ -255,7 +248,6 @@ const handleCheckout = async () => {
                       className="flex gap-6 md:gap-8 p-6 md:p-8 transition-all duration-300"
                       style={{ backgroundColor: tokens.surfaceLow }}
                     >
-                     
                       <div
                         className="flex-shrink-0 overflow-hidden"
                         style={{
@@ -278,10 +270,8 @@ const handleCheckout = async () => {
                         )}
                       </div>
 
-                    
                       <div className="flex-1 flex flex-col justify-between">
                         <div>
-                         
                           <h2
                             className="font-light leading-tight mb-3"
                             style={{
@@ -293,7 +283,6 @@ const handleCheckout = async () => {
                             {product?.title}
                           </h2>
 
-                         
                           {product?.description && (
                             <p
                               className="text-sm leading-relaxed mb-4"
@@ -303,7 +292,6 @@ const handleCheckout = async () => {
                             </p>
                           )}
 
-                          
                           {Object.keys(attributes).length > 0 && (
                             <div className="flex flex-wrap gap-2 mb-3">
                               {Object.entries(attributes).map(([key, val]) => (
@@ -333,7 +321,6 @@ const handleCheckout = async () => {
                               : "—"}
                           </p>
 
-                          
                           {stock !== undefined && (
                             <p
                               className="text-[10px] uppercase tracking-[0.15em] mb-4"
@@ -344,31 +331,35 @@ const handleCheckout = async () => {
                           )}
 
                           {isPriceChanged && (
-  <>
-    {currentPrice.amount < snapshotPrice.amount ? (
-      <p className="text-[10px] uppercase tracking-[0.15em] mb-4 text-green-600 font-bold">
-        You will get this at{" "}
-        {formatCurrency(currentPrice.amount, currentPrice.currency)}.
-        Save{" "}
-        {formatCurrency(
-          snapshotPrice.amount - currentPrice.amount,
-          currentPrice.currency
-        )}
-      </p>
-    ) : (
-      <p className="text-[10px] uppercase tracking-[0.15em] mb-4 text-red-500 font-bold">
-        Warning! Now, This product will cost you{" "}
-        {formatCurrency(currentPrice.amount, currentPrice.currency)}.
-
-      </p>
-    )}
-  </>
-)}
+                            <>
+                              {currentPrice.amount < snapshotPrice.amount ? (
+                                <p className="text-[10px] uppercase tracking-[0.15em] mb-4 text-green-600 font-bold">
+                                  You will get this at{" "}
+                                  {formatCurrency(
+                                    currentPrice.amount,
+                                    currentPrice.currency,
+                                  )}
+                                  . Save{" "}
+                                  {formatCurrency(
+                                    snapshotPrice.amount - currentPrice.amount,
+                                    currentPrice.currency,
+                                  )}
+                                </p>
+                              ) : (
+                                <p className="text-[10px] uppercase tracking-[0.15em] mb-4 text-red-500 font-bold">
+                                  Warning! Now, This product will cost you{" "}
+                                  {formatCurrency(
+                                    currentPrice.amount,
+                                    currentPrice.currency,
+                                  )}
+                                  .
+                                </p>
+                              )}
+                            </>
+                          )}
                         </div>
 
-                       
                         <div className="flex items-center justify-between flex-wrap gap-4">
-                          
                           <div
                             className="flex items-center"
                             style={{
@@ -398,8 +389,7 @@ const handleCheckout = async () => {
                             >
                               {qty}
                             </span>
-                            <button
-                              id={`qty-inc-${itemId}`}
+                            <button id={`qty-inc-${itemId}`}
                               onClick={() =>
                                 handleIncrementCartItem({
                                   productId: product._id,
@@ -437,7 +427,6 @@ const handleCheckout = async () => {
                 })}
               </div>
 
-              
               <div
                 className="mt-10 pt-8 grid grid-cols-3 gap-4 text-[10px] uppercase tracking-[0.12em]"
                 style={{
@@ -575,7 +564,6 @@ const handleCheckout = async () => {
                   </span>
                 </div>
 
-                
                 <button
                   id="continue-shopping"
                   className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300"

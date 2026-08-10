@@ -1,3 +1,5 @@
+import {incrementCartItemApi, decrementCartItemApi, removeCartItemApi,} from "../service/cart.api.js";
+
 const calculateTotalPrice = (items) => {
   if (!Array.isArray(items)) return 0;
   return items.reduce((total, item) => {
