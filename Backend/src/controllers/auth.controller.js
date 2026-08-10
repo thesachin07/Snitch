@@ -147,3 +147,16 @@ res.status(200).json({
     }
 })
 }
+
+export const logout = async (req, res) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+    });
+
+    return res.status(200).json({
+        success: true,
+        message: "Logged out successfully",
+    });
+};

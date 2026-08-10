@@ -73,5 +73,21 @@ export const authAPI = {
   }
 
   return data;
-}
+},
+
+logout: async () => {
+    const response = await fetch(`${BASE_URL}/logout`, {
+        method: "POST",
+        credentials: "include",
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || "Logout failed");
+    }
+
+    return data;
+},
+
 };

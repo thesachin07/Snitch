@@ -12,6 +12,8 @@ const Home = () => {
     handleGetAllProducts();
   }, []);
   console.log(products);
+
+
   return (
     <div>
       <link
@@ -19,16 +21,11 @@ const Home = () => {
         rel="stylesheet"
       />
 
-      <div
-        className="min-h-screen selection:bg-[#C9A96E]/30"
-        style={{
-          backgroundColor: "#fbf9f6",
-          fontFamily: "'Inter', sans-serif",
-        }}
-      >
+      <div className="min-h-screen selection:bg-[#C9A96E]/30 bg-[#fbf9f6] font-['Inter',sans-serif]">
+        
         <div className="max-w-7xl mx-auto px-8 lg:px-16 xl:px-24">
-          {/* ── Hero / Header ── */}
-          <div className="pt-20 pb-20 text-center flex flex-col items-center">
+          
+          <div className="pt-15 pb-20 text-center flex flex-col items-center">
             <span
               className="text-[10px] uppercase tracking-[0.24em] font-medium mb-6"
               style={{ color: "#C9A96E" }}

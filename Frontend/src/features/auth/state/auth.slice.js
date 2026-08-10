@@ -59,5 +59,19 @@ getMe: async () => {
   },
 
 
-  logoutUser: () => set({ user: null, error: null }),
-});
+logoutUser: async () => {
+    try {
+        await authAPI.logout();
+        set({ user: null, error: null });
+
+        return { success: true };
+    } catch (err) {
+        set({ error: err.message });
+
+        return {
+            success: false,
+            error: err.message,
+        };
+    }
+}
+})

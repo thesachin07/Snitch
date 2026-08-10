@@ -50,12 +50,20 @@ export const routes = createBrowserRouter([
       },
 { 
   path: "/orders",
-   element: <Orders />
+   element: (
+    <Protected>
+      <Orders />
+    </Protected>
+  ),
    },
 
   {
     path: "/order/:orderId",
-    element: <OrderDetails />
+    element:  (
+    <Protected>
+      <OrderDetails />
+    </Protected>
+  ),
   },
 
   {
