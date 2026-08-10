@@ -9,6 +9,7 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { config } from "./config/config.js";
 import cartRoutes from "./routes/cart.routes.js";
 
+
 const app = express();
 app.use(morgan("dev"));
 app.use(express.json());
