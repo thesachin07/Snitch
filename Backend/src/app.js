@@ -28,7 +28,7 @@ passport.use(
     {
       clientID: config.GOOGLE_CLIENT_ID,
       clientSecret: config.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/api/auth/google/callback",
+      callbackURL: `${config.BASE_URL}/api/auth/google/callback`,
     },
     (accessToken, refreshToken, profile, done) => {
       console.log("Google Strategy Executed");
