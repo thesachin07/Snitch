@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router";
 import useAppStore from "../../../app/app.store";
 
 const Nav = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileRef = useRef(null);
   const navigate = useNavigate();
   const user = useAppStore((state) => state.user);
   const logoutUser = useAppStore((state) => state.logoutUser);
@@ -24,6 +25,24 @@ const Nav = () => {
     outlineVariant: "#d0c5b5",
     outline: "#7f7668",
   };
+
+  useEffect(() => {
+  const handleOutsideClick = (event) => {
+    if (
+      profileRef.current &&
+      !profileRef.current.contains(event.target)
+    ) {
+      setIsProfileOpen(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleOutsideClick);
+
+  return () => {
+    document.removeEventListener("mousedown", handleOutsideClick);
+  };
+}, []);
+
   return (
     <nav
       className="bg-[#fbf9f6] px-8 lg:px-16 xl:px-24 pt-8 pb-6 flex items-center justify-between border-b"
@@ -45,11 +64,11 @@ const Nav = () => {
       >
         {user ? (
           <>
-            <div className="relative group font-['Inter',sans-serif]">
+            <div ref={profileRef} className="relative group font-['Inter',sans-serif]">
               <button
                 type="button"
                 onClick={() => setIsProfileOpen((prev) => !prev)}
-                onBlur={() => setIsProfileOpen(false)}
+                // onBlur={() => setIsProfileOpen(false)}
                 aria-expanded={isProfileOpen}
                 className="flex items-center justify-center text-[#7A6E63] hover:text-[#745a27] transition-colors"
               >
