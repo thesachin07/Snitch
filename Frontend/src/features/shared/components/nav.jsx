@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router";
 import useAppStore from "../../../app/app.store";
 
 const Nav = () => {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
   const user = useAppStore((state) => state.user);
   const logoutUser = useAppStore((state) => state.logoutUser);
@@ -47,6 +48,9 @@ const Nav = () => {
             <div className="relative group font-['Inter',sans-serif]">
               <button
                 type="button"
+                onClick={() => setIsProfileOpen((prev) => !prev)}
+                onBlur={() => setIsProfileOpen(false)}
+                aria-expanded={isProfileOpen}
                 className="flex items-center justify-center text-[#7A6E63] hover:text-[#745a27] transition-colors"
               >
                 <svg
@@ -71,8 +75,14 @@ const Nav = () => {
               </button>
 
               <div
-                className="absolute right-0 top-full pt-2 opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto
-                         transition-all duration-200 z-50"
+                className={`absolute right-0 top-full pt-2 transition-all duration-200 z-50
+  ${
+    isProfileOpen
+      ? "opacity-100 scale-100 pointer-events-auto"
+      : "opacity-0 scale-95 pointer-events-none"
+  }
+  group-hover:opacity-100 group-hover:scale-100 group-hover:pointer-events-auto
+`}
               >
                 <div className=" w-[200px] rounded-xl border border-[#e4e2df] bg-white shadow-[0_16px_40px_rgba(0,0,0,0.08)] p-5">
                   <div className="pb-4 border-b border-[#e4e2df]">
