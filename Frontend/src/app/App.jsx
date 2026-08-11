@@ -5,6 +5,8 @@ import { routes } from './app.routes'
 import useAppStore from '../app/app.store.js';
 import { useAuth } from '../features/auth/hook/useAuth.js'
 import { useEffect } from 'react'
+import { ThemeProvider } from 'next-themes'
+import { Toaster } from "@/components/ui/sonner";
 
 function App() {
 
@@ -17,9 +19,10 @@ function App() {
     handleGetMe()
   }, [])
   return (
-    <>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
       <RouterProvider router={routes} />
-    </>
+      <Toaster position="top-center" />
+    </ThemeProvider>
   )
 }
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../hook/useAuth";
 import { useNavigate } from "react-router";
 import ContinueWithGoogle from "../components/ContinueWithGoogle";
+import { toast } from "sonner";
 
 const Login = () => {
   const { handleLogin } = useAuth();
@@ -20,22 +21,28 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-     const result = await handleLogin({
-  email: formData.email,
-  password: formData.password,
-});
+      const result = await handleLogin({
+        email: formData.email,
+        password: formData.password,
+      });
 
-if (!result.success) return;
+      if (!result?.success) {
+        toast.error("Login failed. Please try again.");
+        return;
+      }
 
-const user = result.data.user;
+      toast.success("Signed in successfully");
 
-if (user.role === "buyer") {
-  navigate("/");
-} else if (user.role === "seller") {
-  navigate("/seller/dashboard");
-}
+      const user = result?.data?.user;
+
+      if (user?.role === "buyer") {
+        navigate("/");
+      } else if (user?.role === "seller") {
+        navigate("/seller/dashboard");
+      }
     } catch (error) {
       console.error("Login failed", error);
+      toast.error("Login failed. Please try again.");
     }
   };
 

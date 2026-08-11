@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, Link } from "react-router";
+import { toast } from "sonner";
 import useAppStore from "../../../app/app.store";
 
 const Nav = () => {
@@ -127,8 +128,11 @@ const Nav = () => {
                     onClick={async () => {
                       const result = await logoutUser();
 
-                      if (result.success) {
+                      if (result?.success) {
+                        toast.success("You have been logged out");
                         navigate("/login");
+                      } else {
+                        toast.error("Couldn't log out. Please try again.");
                       }
                     }}
                     className="flex items-center justify-start mt-1 w-full rounded-lg px-4 py-3 text-left whitespace-nowrap text-[11px]

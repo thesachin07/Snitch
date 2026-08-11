@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
 import useAppStore from "../../../app/app.store";
 import { useCart } from "../hooks/useCart";
 import { useRazorpay } from "react-razorpay";
@@ -63,10 +64,8 @@ const Cart = () => {
       const order = await handleCreateCartOrder();
       const razorpayOrder = order?.order;
 
-      // console.log(order);
-      // console.log("Razorpay order object:", razorpayOrder);
-
       if (!razorpayOrder) {
+        toast.error("Couldn't start checkout. Please try again.");
         throw new Error("Failed to create Razorpay order");
       }
 
@@ -81,7 +80,10 @@ const Cart = () => {
           const isValid = await handleVerifyCartOrder(response);
 
           if (isValid) {
+            toast.success("Order placed successfully");
             navigate(`/order-success?order_id=${response?.razorpay_order_id}`);
+          } else {
+            toast.error("Payment could not be verified.");
           }
         },
         prefill: {
@@ -101,6 +103,7 @@ const Cart = () => {
         "Failed to create order:",
         error.response?.data || error.message,
       );
+      toast.error("Couldn't place your order. Please try again.");
     }
   };
 
@@ -368,12 +371,18 @@ const Cart = () => {
                           >
                             <button
                               id={`qty-dec-${itemId}`}
-                              onClick={() =>
-                                handleDecrementCartItem({
+                              onClick={async () => {
+                                const response = await handleDecrementCartItem({
                                   productId: product._id,
                                   variantId,
-                                })
-                              }
+                                });
+
+                                if (response?.success) {
+                                  toast.success("Quantity updated");
+                                } else {
+                                  toast.error("Couldn't update quantity");
+                                }
+                              }}
                               className="w-9 h-9 flex items-center justify-center text-sm font-light transition-colors hover:opacity-60"
                               style={{
                                 color: tokens.onSurface,
@@ -390,12 +399,18 @@ const Cart = () => {
                               {qty}
                             </span>
                             <button id={`qty-inc-${itemId}`}
-                              onClick={() =>
-                                handleIncrementCartItem({
+                              onClick={async () => {
+                                const response = await handleIncrementCartItem({
                                   productId: product._id,
                                   variantId,
-                                })
-                              }
+                                });
+
+                                if (response?.success) {
+                                  toast.success("Quantity updated");
+                                } else {
+                                  toast.error("Couldn't update quantity");
+                                }
+                              }}
                               className="w-9 h-9 flex items-center justify-center text-sm font-light transition-colors hover:opacity-60"
                               style={{
                                 color: tokens.onSurface,
@@ -409,12 +424,18 @@ const Cart = () => {
 
                           <button
                             id={`remove-${itemId}`}
-                            onClick={() =>
-                              handleRemoveCartItem({
+                            onClick={async () => {
+                              const response = await handleRemoveCartItem({
                                 productId: product._id,
                                 variantId,
-                              })
-                            }
+                              });
+
+                              if (response?.success) {
+                                toast.success("Item removed from bag");
+                              } else {
+                                toast.error("Couldn't remove item");
+                              }
+                            }}
                             className="text-[10px] uppercase tracking-[0.22em] font-medium transition-all duration-200 hover:underline hover:opacity-70"
                             style={{ color: tokens.muted }}
                           >

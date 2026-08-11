@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { toast } from 'sonner';
 import { useProduct } from '../hooks/useProduct';
 import { useParams } from 'react-router';
 
@@ -58,7 +59,7 @@ const SellerProductDetails = () => {
     // Validate required at least one attribute to be filled
     const hasValidAttribute = attributeInputs.some(attr => attr.key.trim() && attr.value.trim());
     if (!hasValidAttribute) {
-      alert("At least one valid attribute is required.");
+      toast.warning("Please add at least one valid attribute before saving.");
       return;
     }
 
@@ -79,9 +80,14 @@ const SellerProductDetails = () => {
     setLocalVariants([ ...localVariants, variantToSave ]);
     setIsAddingVariant(false);
 
-    await handleAddProductVariant(productId, variantToSave);
+    const result = await handleAddProductVariant(productId, variantToSave);
 
-  
+    if (result?.success) {
+      toast.success("Variant added successfully");
+    } else {
+      toast.error("Couldn't add variant. Please try again.");
+    }
+
     setAttributeInputs([ { key: '', value: '' } ]);
     setNewVariant({
       images: [],

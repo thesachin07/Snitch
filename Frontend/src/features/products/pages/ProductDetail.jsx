@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useProduct } from "../hooks/useProduct";
 import { useCart } from '../../cart/hooks/useCart';
+import { toast } from "sonner";
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -349,25 +350,32 @@ const ProductDetail = () => {
 
               <div className="flex flex-col gap-4 mt-auto">
                 <button
-                  className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300 active:scale-95 active:opacity-80 active:bg-[#333333]"
-                  style={{
-                    backgroundColor: "#1b1c1a",
-                    color: "#fbf9f6",
-                    fontFamily: "'Inter', sans-serif",
-                  }}
-                  onClick={async () => {
-                    const response = await handleAddItem({
-                      productId: product._id,
-                      variantId: activeVariant?._id,
-                    });
+  className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300 active:scale-95 active:opacity-80 active:bg-[#333333]"
+  style={{
+    backgroundColor: "#1b1c1a",
+    color: "#fbf9f6",
+    fontFamily: "'Inter', sans-serif",
+  }}
+  onClick={async () => {
+    if (activeVariant?.stock <= 0) {
+      toast.warning("This item is currently out of stock.");
+      return;
+    }
 
-                    if (response?.success) {
-                      navigate('/cart');
-                    }
-                  }}
-                >
-                  Add to Cart
-                </button>
+    const response = await handleAddItem({
+      productId: product._id,
+      variantId: activeVariant?._id,
+    });
+
+    if (response?.success) {
+      toast.success("Added to bag");
+    } else {
+      toast.error("Couldn't add item");
+    }
+  }}
+>
+  Add to Cart
+</button>
 
                 <button
                   className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300 border"

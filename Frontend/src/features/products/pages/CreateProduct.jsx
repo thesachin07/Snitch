@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback } from "react";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
 import { useProduct } from "../hooks/useProduct";
 
 
@@ -77,9 +78,16 @@ const CreateProduct = () => {
       data.append("priceCurrency", formData.priceCurrency);
       images.forEach((img) => data.append("images", img.file));
       const product = await handleCreateProduct(data);
-      navigate(`/seller/product/${product._id}`);
+
+      if (product?._id) {
+        toast.success("Product created successfully");
+        navigate(`/seller/product/${product._id}`);
+      } else {
+        toast.error("Couldn't create product. Please try again.");
+      }
     } catch (err) {
       console.error("Failed to create product", err);
+      toast.error("Couldn't create product. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

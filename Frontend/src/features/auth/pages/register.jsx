@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../hook/useAuth";
 import { useNavigate } from "react-router";
 import ContinueWithGoogle from "../components/ContinueWithGoogle";
+import { toast } from "sonner";
 
 const Register = () => {
   const { handleRegister } = useAuth();
@@ -25,14 +26,21 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await handleRegister({
+
+    const result = await handleRegister({
       email: formData.email,
       contact: formData.contactNumber,
       password: formData.password,
       isSeller: formData.isSeller,
       fullname: formData.fullName,
     });
-    navigate("/");
+
+    if (result?.success) {
+      toast.success("Account created successfully");
+      navigate("/");
+    } else {
+      toast.error(result?.message || "Registration failed. Please try again.");
+    }
   };
 
   const inputStyle = {
