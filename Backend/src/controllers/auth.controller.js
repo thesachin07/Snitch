@@ -122,7 +122,7 @@ export const googleCallback = async (req, res) => {
       secure: process.env.NODE_ENV === "production",
     });
 
-    return res.redirect("http://localhost:5173/");
+    return res.redirect(`${config.FRONTEND_URL}/`);
   } catch (error) {
     console.error(error);
     return res.status(500).json({
