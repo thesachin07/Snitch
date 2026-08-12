@@ -30,7 +30,7 @@ const handleGetHomepage = useAppStore(
   handleGetAllProducts();
   handleGetHomepage();
 }, []);
-
+console.log("HOMEPAGE DATA:", homepage);
 if (homepageLoading) {
   return (
     <div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center">

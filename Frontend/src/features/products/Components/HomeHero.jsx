@@ -8,10 +8,11 @@ const HomeHero = ({ hero }) => {
     <section className="relative h-[70vh] min-h-[520px] overflow-hidden">
 
       <img
-        src={hero.image}
-        alt={hero.title}
-        className="absolute inset-0 w-full h-full object-cover"
-      />
+  src={hero.image}
+  alt={hero.title}
+  onError={(e) => { e.currentTarget.src = "/snitch_editorial_warm.png"}}
+  className="absolute inset-0 w-full h-full object-cover"
+/>
 
       <div className="absolute inset-0 bg-black/10" />
 

@@ -229,6 +229,7 @@ const Nav = () => {
           )}
 
           {/* CART */}
+          { user && (
           <Link
             to="/cart"
             aria-label="Shopping cart"
@@ -262,6 +263,7 @@ const Nav = () => {
               </span>
             )}
           </Link>
+          )}
         </div>
       </div>
     </nav>

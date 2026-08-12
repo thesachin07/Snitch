@@ -13,6 +13,9 @@ const HomeCampaign = ({ campaign }) => {
         <img
           src={campaign.image}
           alt={campaign.title}
+          onError={(e) => {
+            e.currentTarget.src = "/snitch_editorial_warm.png";
+          }}
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
 
