@@ -12,27 +12,44 @@ import BestOfSnitch from "../Components/BestOfSnitch";
 const Home = () => {
 const products = useAppStore((state) => state.products);
 const homepage = useAppStore((state) => state.homepage);
+const homepageLoading = useAppStore(
+  (state) => state.homepageLoading
+);
+
+const homepageError = useAppStore(
+  (state) => state.homepageError
+);
 
 const { handleGetAllProducts } = useProduct();
+
 const handleGetHomepage = useAppStore(
   (state) => state.handleGetHomepage
 );
 
-  useEffect(() => {
-    handleGetAllProducts();
-  }, []);
+ useEffect(() => {
+  handleGetAllProducts();
+  handleGetHomepage();
+}, []);
+
+if (homepageLoading) {
+  return (
+    <div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center">
+      <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9A96E]">
+        Loading...
+      </p>
+    </div>
+  );
+}
 
   return (
     <main className="min-h-screen bg-[#fbf9f6] text-[#1b1c1a]">
 
-      {/* HERO */}
-      <HomeHero />
 
-      {/* MEN / WOMEN / KIDS */}
-      <HomeCategories />
+      <HomeHero hero={homepage?.hero} />
 
-      {/* CAMPAIGN */}
-      <HomeCampaign />
+      <HomeCategories categories={homepage?.categories} />
+
+      <HomeCampaign campaign={homepage?.campaign} />
 
       {/* BENEFITS */}
       <HomeBenefits />
