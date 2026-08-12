@@ -1,11 +1,12 @@
 import axios from "axios";
+import { API_BASE_URL } from "../../../config/api.js";
 
-const homepageApi = axios.create({
-  baseURL: "/api/homepage",
+const homepageApiInstance = axios.create({
+  baseURL: `${API_BASE_URL}/homepage`,
   withCredentials: true,
 });
 
-export const getHomepage = async () => {
-  const response = await homepageApi.get("/");
+export async function getHomepage() {
+  const response = await homepageApiInstance.get("/");
   return response.data;
-};
+}
