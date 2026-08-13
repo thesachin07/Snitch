@@ -5,6 +5,7 @@ import useAppStore from "../../../app/app.store";
 
 const Nav = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const profileRef = useRef(null);
   const navigate = useNavigate();
@@ -15,10 +16,7 @@ const Nav = () => {
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
-      if (
-        profileRef.current &&
-        !profileRef.current.contains(event.target)
-      ) {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
         setIsProfileOpen(false);
       }
     };
@@ -32,9 +30,27 @@ const Nav = () => {
 
   return (
     <nav className="relative z-50 bg-[#fbf9f6] border-b border-[#e4e2df]">
-      <div className="h-20 px-6 sm:px-8 lg:px-16 xl:px-24 flex items-center justify-between">
-
-        {/* LEFT NAVIGATION */}
+      <div className="relative h-14 md:h-20 px-4 md:px-6 lg:px-16 xl:px-24 flex items-center justify-between">
+        {/* MOBILE MENU BUTTON */}
+        <button
+          type="button"
+          onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+          aria-label="Open menu"
+          className="md:hidden text-[#7A6E63]"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
+            <line x1="4" y1="6" x2="20" y2="6" />
+            <line x1="4" y1="12" x2="20" y2="12" />
+            <line x1="4" y1="18" x2="20" y2="18" />
+          </svg>
+        </button>
         <div className="hidden md:flex items-center gap-8">
           <Link
             to="/products?category=men"
@@ -81,8 +97,8 @@ const Nav = () => {
         </Link>
 
         {/* RIGHT SIDE */}
-        <div className="ml-auto flex items-center gap-5">
-
+        <div className="ml-auto flex items-center gap-3 md:gap-5">
+          
           {/* SEARCH */}
           <button
             type="button"
@@ -105,7 +121,6 @@ const Nav = () => {
           {/* USER */}
           {user ? (
             <div ref={profileRef} className="relative">
-
               <button
                 type="button"
                 onClick={() => setIsProfileOpen((prev) => !prev)}
@@ -138,15 +153,16 @@ const Nav = () => {
                   }
                 `}
               >
-                <div className="
+                <div
+                  className="
                   w-[210px]
                   rounded-xl
                   border border-[#e4e2df]
                   bg-white
                   shadow-[0_16px_40px_rgba(0,0,0,0.08)]
                   p-5
-                ">
-
+                "
+                >
                   <div className="pb-4 border-b border-[#e4e2df]">
                     <p className="text-sm font-medium text-[#1b1c1a]">
                       Hello {user.fullname}
@@ -229,42 +245,93 @@ const Nav = () => {
           )}
 
           {/* CART */}
-          { user && (
-          <Link
-            to="/cart"
-            aria-label="Shopping cart"
-            className="relative text-[#7A6E63] hover:text-[#1b1c1a] transition-colors"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          {user && (
+            <Link
+              to="/cart"
+              aria-label="Shopping cart"
+              className="relative text-[#7A6E63] hover:text-[#1b1c1a] transition-colors"
             >
-              <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <path d="M16 10a4 4 0 0 1-8 0" />
-            </svg>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <path d="M16 10a4 4 0 0 1-8 0" />
+              </svg>
 
-            {cartItems?.length > 0 && (
-              <span
-                className="
+              {cartItems?.length > 0 && (
+                <span
+                  className="
                   absolute -top-2 -right-2
                   flex items-center justify-center
                   rounded-full bg-[#C9A96E] text-white
                   w-4 h-4 text-[9px] font-semibold
                 "
-              >
-                {cartItems.length > 9 ? "9+" : cartItems.length}
-              </span>
-            )}
-          </Link>
+                >
+                  {cartItems.length > 9 ? "9+" : cartItems.length}
+                </span>
+              )}
+            </Link>
           )}
         </div>
+
+        {/* MOBILE MENU */}
+        {isMobileMenuOpen && (
+          <div className="absolute left-0 top-full w-full border-t border-[#e4e2df] bg-[#fbf9f6] md:hidden">
+            <div className="px-5 py-6 flex flex-col">
+              <Link
+                to="/products?category=men"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="py-3 text-[10px] uppercase tracking-[0.2em] text-[#1b1c1a]"
+              >
+                Men
+              </Link>
+
+              <Link
+                to="/products?category=women"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="py-3 text-[10px] uppercase tracking-[0.2em] text-[#1b1c1a]"
+              >
+                Women
+              </Link>
+
+              <Link
+                to="/products?sort=new"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="py-3 text-[10px] uppercase tracking-[0.2em] text-[#1b1c1a]"
+              >
+                New In
+              </Link>
+
+              {!user && (
+                <div className="mt-3 pt-4 border-t border-[#e4e2df] flex gap-6">
+                  <Link
+                    to="/login"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-[10px] uppercase tracking-[0.2em] text-[#7A6E63]"
+                  >
+                    Sign In
+                  </Link>
+
+                  <Link
+                    to="/register"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-[10px] uppercase tracking-[0.2em] text-[#7A6E63]"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
