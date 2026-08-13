@@ -5,7 +5,7 @@ const HomeHero = ({ hero }) => {
   if (!hero) return null;
 
   return (
-    <section className="relative h-[70vh] min-h-[520px] overflow-hidden">
+    <section className="relative h-[70vh] 'min-h-[520px]' overflow-hidden">
 
       <img
   src={hero.image}

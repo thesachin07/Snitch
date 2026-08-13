@@ -8,6 +8,12 @@ const ProductSchema = new mongoose.Schema(
       required: true,
     },
 
+    category: {
+  type: String,
+  enum: ["men", "women", "kids"],
+  required: true,
+},
+
     description: {
       type: String,
       required: true,

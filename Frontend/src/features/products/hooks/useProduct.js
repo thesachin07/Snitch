@@ -21,8 +21,8 @@ export const useProduct = () => {
         return data.products;
     }
        
-    async function handleGetAllProducts(){
-        const data = await getAllProducts()
+    async function handleGetAllProducts(category){
+        const data = await getAllProducts(category)
 //  console.log("API Response:", data);
         setProducts(data.products);
         // console.log("Products from API:", data.products);

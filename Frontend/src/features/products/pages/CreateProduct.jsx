@@ -3,7 +3,6 @@ import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { useProduct } from "../hooks/useProduct";
 
-
 const CURRENCIES = ["INR", "USD", "EUR", "GBP"];
 const MAX_IMAGES = 7;
 
@@ -13,6 +12,7 @@ const CreateProduct = () => {
 
   const [formData, setFormData] = useState({
     title: "",
+    category: "",
     description: "",
     priceAmount: "",
     priceCurrency: "INR",
@@ -73,6 +73,7 @@ const CreateProduct = () => {
     try {
       const data = new FormData();
       data.append("title", formData.title);
+      data.append("category", formData.category);
       data.append("description", formData.description);
       data.append("priceAmount", formData.priceAmount);
       data.append("priceCurrency", formData.priceCurrency);
@@ -208,6 +209,34 @@ const CreateProduct = () => {
                     onFocus={handleFocus}
                     onBlur={handleBlur}
                   />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <label
+                    className="text-[10px] uppercase tracking-[0.2em] font-medium"
+                    style={{ color: "#7A6E63" }}
+                  >
+                    Category
+                  </label>
+
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    required
+                    className="w-full bg-transparent outline-none py-4 text-sm"
+                    style={inputStyle}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                  >
+                    <option value="" disabled>
+                      Select category
+                    </option>
+
+                    <option value="men">Men</option>
+                    <option value="women">Women</option>
+                    <option value="kids">Kids</option>
+                  </select>
                 </div>
 
                 <div className="flex flex-col gap-3">

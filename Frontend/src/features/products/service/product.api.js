@@ -21,15 +21,21 @@ export async function createProduct(formData) {
         return response.data;
     }
 
-    export async function getAllProducts(){
-       try{
-        const response = await productApiInstance.get("/")
-        return response.data
-       }catch(err){
-  console.error(`Fetch failed: ${err.response?.status || 'Network Error'}`, err.message);        throw err;
-       }
-    }
+export async function getAllProducts(category) {
+  try {
+    const response = await productApiInstance.get("/", {
+      params: category ? { category } : {},
+    });
 
+    return response.data;
+  } catch (err) {
+    console.error(
+      `Fetch failed: ${err.response?.status || "Network Error"}`,
+      err.message
+    );
+    throw err;
+  }
+}
     export async function getProductById(productId) {
         const response = await productApiInstance.get(`/detail/${productId}`)
         return response.data

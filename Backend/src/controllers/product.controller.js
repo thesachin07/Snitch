@@ -4,7 +4,7 @@ import { uploadFile } from "../services/storage.service.js";
 
 export async function createProduct(req, res) {
 
-    const { title, description, priceAmount, priceCurrency } = req.body;
+    const { title, description, category, priceAmount, priceCurrency } = req.body;
     const seller = req.user;
 
     const images = await Promise.all(req.files.map(async (file) => {
@@ -18,6 +18,7 @@ export async function createProduct(req, res) {
 
     const product = await productModel.create({
         title,
+        category,
         description,
         price: {
             amount: priceAmount,
@@ -51,12 +52,21 @@ export async function getSellerProducts(req, res) {
 }
 
 export async function getAllProducts(req, res) {
-    const products = await productModel.find()
-    return res.status(200).json({
-        message: "Products fetched successfully",
-        success: true,
-        products
-    })
+  const { category } = req.query;
+
+  const filter = {};
+
+  if (category) {
+    filter.category = category;
+  }
+
+  const products = await productModel.find(filter);
+
+  return res.status(200).json({
+    message: "Products fetched successfully",
+    success: true,
+    products,
+  });
 }
 
  export async function getProductDetails(req, res){
