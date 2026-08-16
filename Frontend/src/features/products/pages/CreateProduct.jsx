@@ -16,7 +16,7 @@ const CreateProduct = () => {
     description: "",
     priceAmount: "",
     priceCurrency: "INR",
-    isFeatured: true,
+    isFeatured: false,
   });
   const [images, setImages] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -24,8 +24,11 @@ const CreateProduct = () => {
   const fileInputRef = useRef(null);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const addFiles = (files) => {
@@ -304,23 +307,21 @@ const CreateProduct = () => {
                         ))}
                       </select>
                     </div>
-
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 mt-4">
                       <input
+                        id="cp-isFeatured"
                         type="checkbox"
                         name="isFeatured"
                         checked={formData.isFeatured}
-                        onChange={(e) =>
-                          setFormData((prev) => ({
-                            ...prev,
-                            isFeatured: e.target.checked,
-                          }))
-                        }
-                        className="w-4 h-4 accent-[#C9A96E]"
+                        onChange={handleChange}
+                        className="w-4 h-4 accent-[#C9A96E] cursor-pointer"
                       />
-
-                      <label className="text-xs text-[#7A6E63]">
-                        Show in Best of Snitch
+                      <label
+                        htmlFor="cp-isFeatured"
+                        className="text-[11px] uppercase tracking-[0.15em]"
+                        style={{ color: "#7A6E63" }}
+                      >
+                        Feature in "Best of Snitch" (Home Page)
                       </label>
                     </div>
                   </div>

@@ -4,7 +4,7 @@ import { uploadFile } from "../services/storage.service.js";
 
 export async function createProduct(req, res) {
 
-    const { title, description, category, priceAmount, priceCurrency } = req.body;
+    const { title, description, category, priceAmount, priceCurrency, isFeatured} = req.body;
     const seller = req.user;
 
     const images = await Promise.all(req.files.map(async (file) => {
@@ -25,7 +25,8 @@ export async function createProduct(req, res) {
             currency: priceCurrency || "INR"
         },
         images,
-        seller: seller._id
+        seller: seller._id,
+        isFeatured: isFeatured === "true" || isFeatured === true  
     })
 
 
@@ -36,19 +37,21 @@ export async function createProduct(req, res) {
     })
 }
 
-export async function getSellerProducts(req, res) {
- const seller = req.user;
+export async function getAllProducts(req, res) {
+  const { category, featured } = req.body ?? {};  
+  const { category: cat, featured: feat } = req.query;
 
- const products = await productModel.find({ seller: seller._id});
+  const filter = {};
+  if (cat) filter.category = cat;
+  if (feat === "true") filter.isFeatured = true;
 
- res.status(200).json({
-    message: "Products fetched sucessfully",
+  const products = await productModel.find(filter);
+
+  return res.status(200).json({
+    message: "Products fetched successfully",
     success: true,
-    products
- })
-
-
-
+    products,
+  });
 }
 
 export async function getAllProducts(req, res) {
@@ -88,8 +91,6 @@ export async function getAllProducts(req, res) {
 
  export async function addProductVariant(req, res){
 
-// console.log("BODY:", req.body);
-//     console.log("FILES:", req.files);
 
         const productId = req.params.productId;
         const product = await productModel.findOne({
