@@ -77,16 +77,16 @@ const SellerProductDetails = () => {
       currency: newVariant.price.currency || 'INR'
     };
 
-    setLocalVariants([ ...localVariants, variantToSave ]);
     setIsAddingVariant(false);
 
-    const result = await handleAddProductVariant(productId, variantToSave);
+const result = await handleAddProductVariant(productId, variantToSave);
 
-    if (result?.success) {
-      toast.success("Variant added successfully");
-    } else {
-      toast.error("Couldn't add variant. Please try again.");
-    }
+if (result?.success) {
+  toast.success("Variant added successfully");
+  await fetchProductDetails(); // re-pull real DB data instead of fake local push
+} else {
+  toast.error("Couldn't add variant. Please try again.");
+}
 
     setAttributeInputs([ { key: '', value: '' } ]);
     setNewVariant({

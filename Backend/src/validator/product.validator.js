@@ -21,7 +21,7 @@ export const createProductValidator = [
 ]
 
 export const addVariantValidator = [
-    body("priceAmount").isNumeric().withMessage("Price amount must be a number"),
+    body("priceAmount").optional({ checkFalsy: true }).isNumeric().withMessage("Price amount must be a number"),
     body("priceCurrency").notEmpty().withMessage("Price currency is required"),
     body("stock").isNumeric().withMessage("Stock must be a number"),
     validateRequest
