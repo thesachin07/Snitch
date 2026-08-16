@@ -52,7 +52,7 @@ export async function getAllProducts(category) {
         })
 
         formData.append("stock", newProductVariant.stock)
-        formData.append("priceAmount", newProductVariant.price)
+        formData.append("priceAmount", newProductVariant.price ?? 0)
         formData.append("priceCurrency", newProductVariant.currency || "INR")
         formData.append("attributes", JSON.stringify(newProductVariant.attributes))
 

@@ -16,6 +16,7 @@ const CreateProduct = () => {
     description: "",
     priceAmount: "",
     priceCurrency: "INR",
+    isFeatured: true,
   });
   const [images, setImages] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -77,6 +78,7 @@ const CreateProduct = () => {
       data.append("description", formData.description);
       data.append("priceAmount", formData.priceAmount);
       data.append("priceCurrency", formData.priceCurrency);
+      data.append("isFeatured", formData.isFeatured);
       images.forEach((img) => data.append("images", img.file));
       const product = await handleCreateProduct(data);
 
@@ -301,6 +303,25 @@ const CreateProduct = () => {
                           </option>
                         ))}
                       </select>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        name="isFeatured"
+                        checked={formData.isFeatured}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            isFeatured: e.target.checked,
+                          }))
+                        }
+                        className="w-4 h-4 accent-[#C9A96E]"
+                      />
+
+                      <label className="text-xs text-[#7A6E63]">
+                        Show in Best of Snitch
+                      </label>
                     </div>
                   </div>
                 </div>
