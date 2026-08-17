@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useProduct } from "../hooks/useProduct";
-import { useCart } from '../../cart/hooks/useCart';
+import { useCart } from "../../cart/hooks/useCart";
 import { toast } from "sonner";
 
 const ProductDetail = () => {
@@ -12,8 +12,7 @@ const ProductDetail = () => {
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedAttributes, setSelectedAttributes] = useState({});
- const { handleAddItem } = useCart()
-
+  const { handleAddItem } = useCart();
 
   const availableAttributes = React.useMemo(() => {
     if (!product?.variants) return {};
@@ -46,8 +45,6 @@ const ProductDetail = () => {
       ) || product.variants[0]
     );
   }, [product, selectedAttributes]);
-
-// console.log({productId, activeVariant})
 
 
   useEffect(() => {
@@ -109,7 +106,6 @@ const ProductDetail = () => {
     if (exactMatch) {
       setSelectedAttributes(exactMatch.attributes);
     } else {
-      
       const fallbackVariant = product.variants.find(
         (v) => v.attributes && v.attributes[attrName] === value,
       );
@@ -121,9 +117,6 @@ const ProductDetail = () => {
     }
   };
 
-   
-    // console.log(product);
-  
 
   if (loading) {
     return (
@@ -150,9 +143,6 @@ const ProductDetail = () => {
       </div>
     );
   }
-  // console.log("Available Attributes:", availableAttributes);
-  // console.log("Selected Attributes:", selectedAttributes);
-  // console.log("Active Variant:", activeVariant);
 
   return (
     <div>
@@ -282,7 +272,6 @@ const ProductDetail = () => {
                 <span
                   className="text-sm uppercase tracking-[0.2em] font-medium"
                   style={{ color: "#1b1c1a" }}
-                  
                 >
                   {displayPrice?.currency}{" "}
                   {displayPrice?.amount?.toLocaleString()}
@@ -294,7 +283,6 @@ const ProductDetail = () => {
                 style={{ backgroundColor: "#e4e2df" }}
               />
 
-             
               {Object.entries(availableAttributes).map(([attrName, values]) => (
                 <div key={attrName} className="mb-6">
                   <h3
@@ -320,7 +308,6 @@ const ProductDetail = () => {
                 </div>
               ))}
 
-             
               {activeVariant && activeVariant.stock !== undefined && (
                 <div className="mb-6">
                   <span
@@ -350,32 +337,32 @@ const ProductDetail = () => {
 
               <div className="flex flex-col gap-4 mt-auto">
                 <button
-  className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300 active:scale-95 active:opacity-80 active:bg-[#333333]"
-  style={{
-    backgroundColor: "#1b1c1a",
-    color: "#fbf9f6",
-    fontFamily: "'Inter', sans-serif",
-  }}
-  onClick={async () => {
-    if (activeVariant?.stock <= 0) {
-      toast.warning("This item is currently out of stock.");
-      return;
-    }
+                  className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300 active:scale-95 active:opacity-80 active:bg-[#333333]"
+                  style={{
+                    backgroundColor: "#1b1c1a",
+                    color: "#fbf9f6",
+                    fontFamily: "'Inter', sans-serif",
+                  }}
+                  onClick={async () => {
+                    if (activeVariant?.stock <= 0) {
+                      toast.warning("This item is currently out of stock.");
+                      return;
+                    }
 
-    const response = await handleAddItem({
-      productId: product._id,
-      variantId: activeVariant?._id,
-    });
+                    const response = await handleAddItem({
+                      productId: product._id,
+                      variantId: activeVariant?._id,
+                    });
 
-    if (response?.success) {
-      toast.success("Added to bag");
-    } else {
-      toast.error("Couldn't add item");
-    }
-  }}
->
-  Add to Cart
-</button>
+                    if (response?.success) {
+                      toast.success("Added to bag");
+                    } else {
+                      toast.error("Couldn't add item");
+                    }
+                  }}
+                >
+                  Add to Cart
+                </button>
 
                 <button
                   className="w-full py-4 text-[11px] uppercase tracking-[0.25em] font-medium transition-all duration-300 border"
@@ -384,6 +371,23 @@ const ProductDetail = () => {
                     borderColor: "#d0c5b5",
                     color: "#1b1c1a",
                     fontFamily: "'Inter', sans-serif",
+                  }}
+                  onClick={async () => {
+                    if (activeVariant?.stock <= 0) {
+                      toast.warning("This item is currently out of stock.");
+                      return;
+                    }
+                    const response = await handleAddItem({
+                      productId: product._id,
+                      variantId: activeVariant?._id,
+                    });
+                    if (response?.success) {
+                      navigate("/cart");
+                    } else {
+                      toast.error(
+                        "Couldn't process Buy Now. Please try again.",
+                      );
+                    }
                   }}
                 >
                   Buy Now
