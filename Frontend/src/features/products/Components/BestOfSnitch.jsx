@@ -31,7 +31,7 @@ const BestOfSnitch = ({ products = [] }) => {
         </Link>
       </div>
 
-      {/* PRODUCTS — HORIZONTAL SCROLL */}
+      
       {featuredProducts.length > 0 ? (
         <div className="flex gap-5 md:gap-7 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
           {featuredProducts.map((product) => {

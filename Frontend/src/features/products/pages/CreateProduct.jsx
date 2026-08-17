@@ -252,7 +252,7 @@ const CreateProduct = () => {
                     Price
                   </label>
                   <div className="flex gap-5 items-end">
-                    <div className="flex flex-col gap-1 flex-[3]">
+                    <div className="flex flex-col gap-2 flex-[3]">
                       <span
                         className="text-[9px] uppercase tracking-[0.18em]"
                         style={{ color: "#B5ADA3" }}
@@ -276,7 +276,7 @@ const CreateProduct = () => {
                       />
                     </div>
 
-                    <div className="flex flex-col gap-1 flex-[1]">
+                    <div className="flex flex-col gap-3 flex-[1]">
                       <span
                         className="text-[9px] uppercase tracking-[0.18em]"
                         style={{ color: "#B5ADA3" }}
@@ -321,7 +321,7 @@ const CreateProduct = () => {
                         className="text-[11px] uppercase tracking-[0.15em]"
                         style={{ color: "#7A6E63" }}
                       >
-                        Feature in "Best of Snitch" (Home Page)
+                        Add to Homepage
                       </label>
                     </div>
                   </div>
