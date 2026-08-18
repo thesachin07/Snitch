@@ -14,6 +14,8 @@ const Nav = () => {
   const logoutUser = useAppStore((state) => state.logoutUser);
   const cartItems = useAppStore((state) => state.cart.items);
 
+  const isSeller = user?.role === "seller";   // 👈 single source of truth
+
   useEffect(() => {
     const handleOutsideClick = (event) => {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
@@ -31,92 +33,60 @@ const Nav = () => {
   return (
     <nav className="relative z-50 bg-[#fbf9f6] border-b border-[#e4e2df]">
       <div className="relative h-14 md:h-20 px-4 md:px-6 lg:px-16 xl:px-24 flex items-center justify-between">
-        {/* MOBILE MENU BUTTON */}
-        <button
-          type="button"
-          onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-          aria-label="Open menu"
-          className="md:hidden text-[#7A6E63]"
-        >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
+        {/* MOBILE MENU BUTTON — customers only, seller ke paas hamburger me kuch dikhana hi nahi */}
+        {!isSeller && (
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+            aria-label="Open menu"
+            className="md:hidden text-[#7A6E63]"
           >
-            <line x1="4" y1="6" x2="20" y2="6" />
-            <line x1="4" y1="12" x2="20" y2="12" />
-            <line x1="4" y1="18" x2="20" y2="18" />
-          </svg>
-        </button>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <line x1="4" y1="6" x2="20" y2="6" />
+              <line x1="4" y1="12" x2="20" y2="12" />
+              <line x1="4" y1="18" x2="20" y2="18" />
+            </svg>
+          </button>
+        )}
+
+        {/* LEFT LINKS — customer: categories | seller: nothing (dashboard access is via profile dropdown only) */}
         <div className="hidden md:flex items-center gap-8">
-          <Link
-            to="/products?category=men"
-            className="text-[10px] uppercase tracking-[0.2em] font-medium
-            text-[#7A6E63] hover:text-[#1b1c1a] transition-colors"
-          >
-            Men
-          </Link>
-
-          <Link
-            to="/products?category=women"
-            className="text-[10px] uppercase tracking-[0.2em] font-medium
-            text-[#7A6E63] hover:text-[#1b1c1a] transition-colors"
-          >
-            Women
-          </Link>
-
-          <Link
-            to="/products?sort=new"
-            className="text-[10px] uppercase tracking-[0.2em] font-medium
-            text-[#7A6E63] hover:text-[#1b1c1a] transition-colors"
-          >
-            New In
-          </Link>
+          {!isSeller && (
+            <>
+              <Link to="/products?category=men" className="text-[10px] uppercase tracking-[0.2em] font-medium text-[#7A6E63] hover:text-[#1b1c1a] transition-colors">
+                Men
+              </Link>
+              <Link to="/products?category=women" className="text-[10px] uppercase tracking-[0.2em] font-medium text-[#7A6E63] hover:text-[#1b1c1a] transition-colors">
+                Women
+              </Link>
+              <Link to="/products?sort=new" className="text-[10px] uppercase tracking-[0.2em] font-medium text-[#7A6E63] hover:text-[#1b1c1a] transition-colors">
+                New In
+              </Link>
+            </>
+          )}
         </div>
 
         {/* LOGO */}
         <Link
           to="/"
-          className="
-            absolute left-1/2 -translate-x-1/2
-            text-lg sm:text-xl
-            tracking-[0.35em]
-            font-medium
-            text-[#1b1c1a]
-            hover:opacity-70
-            transition-opacity
-          "
-          style={{
-            fontFamily: "'Cormorant Garamond', serif",
-          }}
+          className="absolute left-1/2 -translate-x-1/2 text-lg sm:text-xl tracking-[0.35em] font-medium text-[#1b1c1a] hover:opacity-70 transition-opacity"
+          style={{ fontFamily: "'Cormorant Garamond', serif" }}
         >
           SNITCH.
         </Link>
 
         {/* RIGHT SIDE */}
         <div className="ml-auto flex items-center gap-3 md:gap-5">
-          
-          {/* SEARCH */}
-          <button
-            type="button"
-            aria-label="Search"
-            className="text-[#7A6E63] hover:text-[#1b1c1a] transition-colors"
-          >
-            <svg
-              width="19"
-              height="19"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.4"
-            >
-              <circle cx="11" cy="11" r="7" />
-              <path d="m20 20-4-4" />
-            </svg>
-          </button>
+
+          {/* SEARCH — only for customers */}
+          {!isSeller && (
+            <button type="button" aria-label="Search" className="text-[#7A6E63] hover:text-[#1b1c1a] transition-colors">
+              <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-4-4" />
+              </svg>
+            </button>
+          )}
 
           {/* USER */}
           {user ? (
@@ -128,14 +98,7 @@ const Nav = () => {
                 aria-label="Account"
                 className="text-[#7A6E63] hover:text-[#1b1c1a] transition-colors"
               >
-                <svg
-                  width="19"
-                  height="19"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.4"
-                >
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
                   <circle cx="12" cy="8" r="4" />
                   <path d="M4 21c.8-4 3.5-6 8-6s7.2 2 8 6" />
                 </svg>
@@ -143,55 +106,43 @@ const Nav = () => {
 
               {/* PROFILE DROPDOWN */}
               <div
-                className={`
-                  absolute right-0 top-full pt-3 z-50
-                  transition-all duration-200
-                  ${
-                    isProfileOpen
-                      ? "opacity-100 scale-100 pointer-events-auto"
-                      : "opacity-0 scale-95 pointer-events-none"
-                  }
-                `}
+                className={`absolute right-0 top-full pt-3 z-50 transition-all duration-200 ${
+                  isProfileOpen ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"
+                }`}
               >
-                <div
-                  className="
-                  w-[210px]
-                  rounded-xl
-                  border border-[#e4e2df]
-                  bg-white
-                  shadow-[0_16px_40px_rgba(0,0,0,0.08)]
-                  p-5
-                "
-                >
+                <div className="w-[210px] rounded-xl border border-[#e4e2df] bg-white shadow-[0_16px_40px_rgba(0,0,0,0.08)] p-5">
                   <div className="pb-4 border-b border-[#e4e2df]">
-                    <p className="text-sm font-medium text-[#1b1c1a]">
-                      Hello {user.fullname}
-                    </p>
-
-                    <p className="mt-1 text-xs text-[#7A6E63]">
-                      {user.contact || user.mobile || ""}
-                    </p>
+                    <p className="text-sm font-medium text-[#1b1c1a]">Hello {user.fullname}</p>
+                    <p className="mt-1 text-xs text-[#7A6E63]">{user.contact || user.mobile || ""}</p>
+                    {isSeller && (
+                      <span className="inline-block mt-2 text-[9px] uppercase tracking-[0.15em] text-[#C9A96E] font-semibold">
+                        Seller Account
+                      </span>
+                    )}
                   </div>
 
-                  <Link
-                    to="/orders"
-                    onClick={() => setIsProfileOpen(false)}
-                    className="
-                      block mt-4 rounded-lg px-4 py-3
-                      text-[10px] uppercase tracking-[0.15em]
-                      text-[#1b1c1a]
-                      hover:bg-[#f5f3f0]
-                      transition-colors
-                    "
-                  >
-                    View Orders
-                  </Link>
+                  {isSeller ? (
+                    <Link
+                      to="/seller/dashboard"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="block mt-4 rounded-lg px-4 py-3 text-[10px] uppercase tracking-[0.15em] text-[#1b1c1a] hover:bg-[#f5f3f0] transition-colors"
+                    >
+                      Seller Dashboard
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/orders"
+                      onClick={() => setIsProfileOpen(false)}
+                      className="block mt-4 rounded-lg px-4 py-3 text-[10px] uppercase tracking-[0.15em] text-[#1b1c1a] hover:bg-[#f5f3f0] transition-colors"
+                    >
+                      View Orders
+                    </Link>
+                  )}
 
                   <button
                     type="button"
                     onClick={async () => {
                       const result = await logoutUser();
-
                       if (result?.success) {
                         toast.success("You have been logged out");
                         navigate("/login");
@@ -199,14 +150,7 @@ const Nav = () => {
                         toast.error("Couldn't log out. Please try again.");
                       }
                     }}
-                    className="
-                      block mt-1 w-full text-left
-                      rounded-lg px-4 py-3
-                      text-[10px] uppercase tracking-[0.15em]
-                      text-[#1b1c1a]
-                      hover:bg-[#f5f3f0]
-                      transition-colors
-                    "
+                    className="block mt-1 w-full text-left rounded-lg px-4 py-3 text-[10px] uppercase tracking-[0.15em] text-[#1b1c1a] hover:bg-[#f5f3f0] transition-colors"
                   >
                     Logout
                   </button>
@@ -215,66 +159,26 @@ const Nav = () => {
             </div>
           ) : (
             <>
-              <Link
-                to="/login"
-                className="hidden sm:block text-[10px] uppercase tracking-[0.2em]
-                text-[#7A6E63] hover:text-[#1b1c1a]"
-              >
+              <Link to="/login" className="hidden sm:block text-[10px] uppercase tracking-[0.2em] text-[#7A6E63] hover:text-[#1b1c1a]">
                 Sign In
               </Link>
-
-              <Link
-                to="/register"
-                className="hidden sm:block text-[10px] uppercase tracking-[0.2em]
-                text-[#7A6E63] hover:text-[#1b1c1a]"
-              >
+              <Link to="/register" className="hidden sm:block text-[10px] uppercase tracking-[0.2em] text-[#7A6E63] hover:text-[#1b1c1a]">
                 Sign Up
               </Link>
             </>
           )}
 
-          {/* SELLER */}
-          {user?.role === "seller" && (
-            <Link
-              to="/seller/dashboard"
-              className="hidden lg:block text-[10px] uppercase tracking-[0.15em]
-              text-[#7A6E63] hover:text-[#1b1c1a]"
-            >
-              Seller
-            </Link>
-          )}
-
-          {/* CART */}
-          {user && (
-            <Link
-              to="/cart"
-              aria-label="Shopping cart"
-              className="relative text-[#7A6E63] hover:text-[#1b1c1a] transition-colors"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.4"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
+          {/* CART — only for customers */}
+          {user && !isSeller && (
+            <Link to="/cart" aria-label="Shopping cart" className="relative text-[#7A6E63] hover:text-[#1b1c1a] transition-colors">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                 <line x1="3" y1="6" x2="21" y2="6" />
                 <path d="M16 10a4 4 0 0 1-8 0" />
               </svg>
 
               {cartItems?.length > 0 && (
-                <span
-                  className="
-                  absolute -top-2 -right-2
-                  flex items-center justify-center
-                  rounded-full bg-[#C9A96E] text-white
-                  w-4 h-4 text-[9px] font-semibold
-                "
-                >
+                <span className="absolute -top-2 -right-2 flex items-center justify-center rounded-full bg-[#C9A96E] text-white w-4 h-4 text-[9px] font-semibold">
                   {cartItems.length > 9 ? "9+" : cartItems.length}
                 </span>
               )}
@@ -282,49 +186,26 @@ const Nav = () => {
           )}
         </div>
 
-        {/* MOBILE MENU */}
-        {isMobileMenuOpen && (
+        {/* MOBILE MENU — customers only */}
+        {isMobileMenuOpen && !isSeller && (
           <div className="absolute left-0 top-full w-full border-t border-[#e4e2df] bg-[#fbf9f6] md:hidden">
             <div className="px-5 py-6 flex flex-col">
-              <Link
-                to="/products?category=men"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="py-3 text-[10px] uppercase tracking-[0.2em] text-[#1b1c1a]"
-              >
+              <Link to="/products?category=men" onClick={() => setIsMobileMenuOpen(false)} className="py-3 text-[10px] uppercase tracking-[0.2em] text-[#1b1c1a]">
                 Men
               </Link>
-
-              <Link
-                to="/products?category=women"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="py-3 text-[10px] uppercase tracking-[0.2em] text-[#1b1c1a]"
-              >
+              <Link to="/products?category=women" onClick={() => setIsMobileMenuOpen(false)} className="py-3 text-[10px] uppercase tracking-[0.2em] text-[#1b1c1a]">
                 Women
               </Link>
-
-              <Link
-                to="/products?sort=new"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="py-3 text-[10px] uppercase tracking-[0.2em] text-[#1b1c1a]"
-              >
+              <Link to="/products?sort=new" onClick={() => setIsMobileMenuOpen(false)} className="py-3 text-[10px] uppercase tracking-[0.2em] text-[#1b1c1a]">
                 New In
               </Link>
 
               {!user && (
                 <div className="mt-3 pt-4 border-t border-[#e4e2df] flex gap-6">
-                  <Link
-                    to="/login"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-[10px] uppercase tracking-[0.2em] text-[#7A6E63]"
-                  >
+                  <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} className="text-[10px] uppercase tracking-[0.2em] text-[#7A6E63]">
                     Sign In
                   </Link>
-
-                  <Link
-                    to="/register"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-[10px] uppercase tracking-[0.2em] text-[#7A6E63]"
-                  >
+                  <Link to="/register" onClick={() => setIsMobileMenuOpen(false)} className="text-[10px] uppercase tracking-[0.2em] text-[#7A6E63]">
                     Sign Up
                   </Link>
                 </div>
