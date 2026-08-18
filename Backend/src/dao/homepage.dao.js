@@ -4,7 +4,6 @@ export const createHomepage = async () => {
   const existingHomepage = await homepageModel.findOne();
 
   if (existingHomepage) {
-    console.log("Homepage already exists");
     return existingHomepage;
   }
 

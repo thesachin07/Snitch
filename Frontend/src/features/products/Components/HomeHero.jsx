@@ -5,26 +5,26 @@ const HomeHero = ({ hero }) => {
   if (!hero) return null;
 
   return (
-    <section className="relative h-[70vh] 'min-h-[520px]' overflow-hidden">
+    <section className="relative h-[70vh] min-h-[520px] overflow-hidden">
 
       <img
-  src={hero.image}
-  alt={hero.title}
-  onError={(e) => { e.currentTarget.src = "/snitch_editorial_warm.png"}}
-  className="absolute inset-0 w-full h-full object-cover"
-/>
+        src={hero.image}
+        alt={hero.title}
+        onError={(e) => { e.currentTarget.src = "/snitch_editorial_warm.png" }}
+        className="absolute inset-0 w-full h-full object-cover object-top"
+      />
 
       <div className="absolute inset-0 bg-black/10" />
 
-      <div className="relative z-10 h-full flex items-center justify-center text-center">
+      <div className="relative z-10 h-full flex items-end md:items-center justify-center text-center pb-16 md:pb-0">
         <div className="max-w-xl px-6">
 
-          <p className="mb-5 text-[10px] uppercase tracking-[0.3em] text-[#3f3a34]">
+          <p className="mb-5 text-[10px] uppercase tracking-[0.3em] ml-[80px] text-[#3f3a34]">
             {hero.eyebrow}
           </p>
 
           <h1
-            className="text-5xl md:text-7xl leading-[0.9] font-light text-[#1b1c1a]"
+            className="text-5xl md:text-7xl leading-[0.9] font-light text-[#f2f4f1]"
             style={{
               fontFamily: "'Cormorant Garamond', serif",
             }}
