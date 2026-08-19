@@ -1,5 +1,5 @@
 import useAppStore from "../../../app/app.store";
-import { createProduct, getSellerProducts, getAllProducts, getProductById, addProductVariant } from "../service/product.api";
+import { createProduct, getSellerProducts, getAllProducts, getProductById, addProductVariant, updateProduct, deleteProduct, updateProductVariant, deleteProductVariant, } from "../service/product.api";
 
 export const useProduct = () => {
 
@@ -39,11 +39,35 @@ async function handleAddProductVariant(productId, newProductVariant){
     return data;
 }
 
+    async function handleUpdateProduct(productId, updates) {
+        const data = await updateProduct(productId, updates);
+        return data;
+    }
+
+    async function handleDeleteProduct(productId) {
+        const data = await deleteProduct(productId);
+        return data;
+    }
+
+    async function handleUpdateProductVariant(productId, variantId, updates) {
+        const data = await updateProductVariant(productId, variantId, updates);
+        return data;
+    }
+
+    async function handleDeleteProductVariant(productId, variantId) {
+        const data = await deleteProductVariant(productId, variantId);
+        return data;
+    }
+
     return {
         handleCreateProduct,
         handleGetSellerProduct,
         handleGetAllProducts,
         handleGetProductById,
         handleAddProductVariant,
+        handleUpdateProduct,
+        handleDeleteProduct,
+        handleUpdateProductVariant,
+        handleDeleteProductVariant,
     };
 };

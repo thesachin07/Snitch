@@ -41,10 +41,7 @@ export async function getAllProducts(category) {
         return response.data
     }
 
-    export async function addProductVariant(productId, newProductVariant) {
-
-        //   console.log(newProductVariant)
-          
+    export async function addProductVariant(productId, newProductVariant) {    
         const formData = new FormData()
 
         newProductVariant.images.forEach((image) => {
@@ -61,3 +58,42 @@ export async function getAllProducts(category) {
         return response.data
         
     }
+
+    export async function updateProduct(productId, updates) {
+    const formData = new FormData();
+
+    if (updates.title !== undefined) formData.append("title", updates.title);
+    if (updates.description !== undefined) formData.append("description", updates.description);
+    if (updates.category !== undefined) formData.append("category", updates.category);
+    if (updates.priceAmount !== undefined) formData.append("priceAmount", updates.priceAmount);
+    if (updates.priceCurrency !== undefined) formData.append("priceCurrency", updates.priceCurrency);
+    if (updates.removeImageUrls) formData.append("removeImageUrls", JSON.stringify(updates.removeImageUrls));
+    (updates.newImages || []).forEach((file) => formData.append("images", file));
+
+    const response = await productApiInstance.patch(`/${productId}`, formData);
+    return response.data;
+}
+
+export async function deleteProduct(productId) {
+    const response = await productApiInstance.delete(`/${productId}`);
+    return response.data;
+}
+
+export async function updateProductVariant(productId, variantId, updates) {
+    const formData = new FormData();
+
+    if (updates.stock !== undefined) formData.append("stock", updates.stock);
+    if (updates.priceAmount !== undefined) formData.append("priceAmount", updates.priceAmount);
+    if (updates.priceCurrency !== undefined) formData.append("priceCurrency", updates.priceCurrency);
+    if (updates.attributes !== undefined) formData.append("attributes", JSON.stringify(updates.attributes));
+    if (updates.removeImageUrls) formData.append("removeImageUrls", JSON.stringify(updates.removeImageUrls));
+    (updates.newImages || []).forEach((file) => formData.append("images", file));
+
+    const response = await productApiInstance.patch(`/${productId}/variants/${variantId}`, formData);
+    return response.data;
+}
+
+export async function deleteProductVariant(productId, variantId) {
+    const response = await productApiInstance.delete(`/${productId}/variants/${variantId}`);
+    return response.data;
+}
