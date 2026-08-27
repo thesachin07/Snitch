@@ -54,14 +54,27 @@ const Login = () => {
       />
 
       <div
-        className="min-h-screen flex flex-col lg:flex-row selection:bg-[#C9A96E]/30"
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-3 sm:p-6 selection:bg-[#C9A96E]/30"
         style={{
-          backgroundColor: "#fbf9f6",
           fontFamily: "'Inter', sans-serif",
         }}
+        onClick={() => navigate(-1)}
       >
         <div
-          className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
+          className="relative flex w-full max-w-5xl max-h-[calc(100vh-1.5rem)] flex-col overflow-y-auto rounded-xl shadow-2xl sm:max-h-[calc(100vh-3rem)] lg:h-[min(90vh,800px)] lg:max-h-[calc(100vh-3rem)] lg:overflow-hidden lg:flex-row"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={() => navigate(-1)}
+            className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-xl leading-none text-[#1b1c1a] shadow-sm transition-colors hover:bg-white"
+          >
+            ×
+          </button>
+
+        <div
+          className="relative flex min-h-40 w-full shrink-0 overflow-hidden lg:h-full lg:min-h-0 lg:w-[46%]"
           style={{ backgroundColor: "#f5f3f0" }}
         >
           <img
@@ -111,7 +124,7 @@ const Login = () => {
         </div>
 
         <div
-          className="w-full lg:w-1/2 flex items-center justify-center min-h-screen px-8 sm:px-14 lg:px-20 py-16"
+          className="flex w-full items-start justify-center overflow-y-auto px-8 py-12 sm:px-14 sm:py-16 lg:h-full lg:w-[54%] lg:px-16"
           style={{ backgroundColor: "#fbf9f6" }}
         >
           <div className="w-full max-w-sm">
@@ -276,6 +289,7 @@ const Login = () => {
               </p>
             </form>
           </div>
+        </div>
         </div>
       </div>
     </>
