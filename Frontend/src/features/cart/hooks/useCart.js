@@ -13,9 +13,37 @@ import {
 } from "../service/cart.api";
 
 export const useCart = () => {
+  const user = useAppStore((state) => state.user);
   const setCartInStore = useAppStore((state) => state.setCart);
+  const setGuestCart = useAppStore((state) => state.setGuestCart);
 
-  async function handleAddItem({ productId, variantId }) {
+  async function handleAddItem({ productId, variantId, product, variant }) {
+    if (!user) {
+      const currentCart = useAppStore.getState().cart;
+      const existingItem = currentCart.items.find(
+        (item) => item.product?._id === productId && item.variant === variantId,
+      );
+      const items = existingItem
+        ? currentCart.items.map((item) =>
+            item === existingItem
+              ? { ...item, quantity: Number(item.quantity ?? 1) + 1 }
+              : item,
+          )
+        : [
+            ...currentCart.items,
+            {
+              _id: `${productId}-${variantId}`,
+              product,
+              variant: variantId,
+              price: variant?.price ?? product?.price,
+              quantity: 1,
+            },
+          ];
+
+      setGuestCart({ ...currentCart, items });
+      return { success: true, cart: useAppStore.getState().cart };
+    }
+
     const response = await addItemToCart({ productId, variantId });
 
     if (!response?.success) {
@@ -30,6 +58,10 @@ export const useCart = () => {
   }
 
   async function handleGetCart() {
+    if (!user) {
+      return { success: true, cart: useAppStore.getState().cart };
+    }
+
     const data = await getCart();
 
     if (data?.cart && setCartInStore) {
@@ -40,6 +72,17 @@ export const useCart = () => {
   }
 
   async function handleIncrementCartItem({ productId, variantId }) {
+    if (!user) {
+      const currentCart = useAppStore.getState().cart;
+      const items = currentCart.items.map((item) =>
+        item.product?._id === productId && item.variant === variantId
+          ? { ...item, quantity: Number(item.quantity ?? 1) + 1 }
+          : item,
+      );
+      setGuestCart({ ...currentCart, items });
+      return { success: true, cart: useAppStore.getState().cart };
+    }
+
     const response = await incrementCartItemApi({ productId, variantId });
 
     if (!response?.success) {
@@ -54,6 +97,19 @@ export const useCart = () => {
   }
 
   async function handleDecrementCartItem({ productId, variantId }) {
+    if (!user) {
+      const currentCart = useAppStore.getState().cart;
+      const items = currentCart.items
+        .map((item) =>
+          item.product?._id === productId && item.variant === variantId
+            ? { ...item, quantity: Number(item.quantity ?? 1) - 1 }
+            : item,
+        )
+        .filter((item) => item.quantity > 0);
+      setGuestCart({ ...currentCart, items });
+      return { success: true, cart: useAppStore.getState().cart };
+    }
+
     const response = await decrementCartItemApi({ productId, variantId });
 
     if (!response?.success) {
@@ -68,6 +124,15 @@ export const useCart = () => {
   }
 
   async function handleRemoveCartItem({ productId, variantId }) {
+    if (!user) {
+      const currentCart = useAppStore.getState().cart;
+      const items = currentCart.items.filter(
+        (item) => !(item.product?._id === productId && item.variant === variantId),
+      );
+      setGuestCart({ ...currentCart, items });
+      return { success: true, cart: useAppStore.getState().cart };
+    }
+
     const response = await removeCartItemApi({ productId, variantId });
 
     if (!response?.success) {

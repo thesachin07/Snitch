@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router";
 import { useProduct } from "../hooks/useProduct";
 import { useCart } from "../../cart/hooks/useCart";
 import { toast } from "sonner";
+import useAppStore from "../../../app/app.store";
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -13,6 +14,7 @@ const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedAttributes, setSelectedAttributes] = useState({});
   const { handleAddItem } = useCart();
+  const user = useAppStore((state) => state.user);
 
   const availableAttributes = React.useMemo(() => {
     if (!product?.variants) return {};
@@ -352,6 +354,8 @@ const ProductDetail = () => {
                     const response = await handleAddItem({
                       productId: product._id,
                       variantId: activeVariant?._id,
+                      product,
+                      variant: activeVariant,
                     });
 
                     if (response?.success) {
@@ -373,6 +377,11 @@ const ProductDetail = () => {
                     fontFamily: "'Inter', sans-serif",
                   }}
                   onClick={async () => {
+                    if (!user) {
+                      navigate("/login");
+                      return;
+                    }
+
                     if (activeVariant?.stock <= 0) {
                       toast.warning("This item is currently out of stock.");
                       return;

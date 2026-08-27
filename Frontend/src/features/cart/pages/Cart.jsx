@@ -60,6 +60,11 @@ const Cart = () => {
     `${currency} ${Number(amount).toLocaleString("en-IN")}`;
 
   const handleCheckout = async () => {
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
     try {
       const order = await handleCreateCartOrder();
       const razorpayOrder = order?.order;

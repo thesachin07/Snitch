@@ -169,7 +169,7 @@ const Nav = () => {
           )}
 
           {/* CART — only for customers */}
-          {user && !isSeller && (
+          {!isSeller && (
             <Link to="/cart" aria-label="Shopping cart" className="relative text-[#7A6E63] hover:text-[#1b1c1a] transition-colors">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />

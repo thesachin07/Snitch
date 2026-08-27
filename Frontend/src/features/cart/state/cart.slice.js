@@ -1,4 +1,19 @@
-import {incrementCartItemApi, decrementCartItemApi, removeCartItemApi,} from "../service/cart.api.js";
+const guestCartStorageKey = "snitch-guest-cart";
+
+const getGuestCart = () => {
+  try {
+    const storedCart = localStorage.getItem(guestCartStorageKey);
+    return storedCart ? JSON.parse(storedCart) : { items: [] };
+  } catch {
+    return { items: [] };
+  }
+};
+
+const saveGuestCart = (cart) => {
+  try {
+    localStorage.setItem(guestCartStorageKey, JSON.stringify(cart));
+  } catch {}
+};
 
 const calculateTotalPrice = (items) => {
   if (!Array.isArray(items)) return 0;
@@ -18,16 +33,24 @@ const normalizeCart = (cart) => ({
 });
 
 export const createCartSlice = (set) => ({
-  cart: {
-    items: [],
-    totalPrice: 0,
-    currency: "INR",
-  },
+  cart: normalizeCart(getGuestCart()),
   quantities: {},
 
   setCart: (cart) =>
     set({
       cart: normalizeCart(cart),
+      quantities: {},
+    }),
+
+  setGuestCart: (cart) => {
+    const normalizedCart = normalizeCart(cart);
+    saveGuestCart(normalizedCart);
+    set({ cart: normalizedCart, quantities: {} });
+  },
+
+  loadGuestCart: () =>
+    set({
+      cart: normalizeCart(getGuestCart()),
       quantities: {},
     }),
 
