@@ -15,6 +15,7 @@ const Products = () => {
     const { handleGetAllProducts } = useProduct();
 
     useEffect(() => {
+      window.scrollTo(0, 0);
         handleGetAllProducts(category);
     }, [category]);
 
