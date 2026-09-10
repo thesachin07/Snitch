@@ -14,7 +14,7 @@ const Nav = () => {
   const logoutUser = useAppStore((state) => state.logoutUser);
   const cartItems = useAppStore((state) => state.cart.items);
 
-  const isSeller = user?.role === "seller";   // 👈 single source of truth
+  const isSeller = user?.role === "seller";   
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
