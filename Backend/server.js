@@ -11,7 +11,7 @@ const startServer = async () => {
   try {
     await connectDB();
 
-    await createHomepage(); // 👈 ADD THIS
+    await createHomepage(); 
 
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
