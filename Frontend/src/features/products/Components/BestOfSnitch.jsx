@@ -4,8 +4,6 @@ import { Link, useNavigate } from "react-router";
 const BestOfSnitch = ({ products = [] }) => {
   const navigate = useNavigate();
 
-  const featuredProducts = products.filter((p) => p.isFeatured);   
-
   return (
     <section className="px-6 md:px-10 lg:px-16 xl:px-24 py-24">
 
@@ -32,9 +30,9 @@ const BestOfSnitch = ({ products = [] }) => {
       </div>
 
       
-      {featuredProducts.length > 0 ? (
+      {products.length > 0 ? (
         <div className="flex gap-5 md:gap-7 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
-          {featuredProducts.map((product) => {
+          {products.map((product) => {
             const imageUrl =
               product.images?.length > 0
                 ? product.images[0].url

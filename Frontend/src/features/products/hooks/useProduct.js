@@ -1,14 +1,30 @@
 import useAppStore from "../../../app/app.store";
-import { createProduct, getSellerProducts, getAllProducts, getProductById, addProductVariant, updateProduct, deleteProduct, updateProductVariant, deleteProductVariant, } from "../service/product.api";
+import {
+    createProduct,
+    getSellerProducts,
+    getAllProducts,
+    getProductById,
+    addProductVariant,
+    updateProduct,
+    deleteProduct,
+    updateProductVariant,
+    deleteProductVariant
+} from "../service/product.api";
 
 export const useProduct = () => {
+    
+    const products = useAppStore((state) => state.products);
 
- const setProducts = useAppStore((state) => state.setProducts);
-    const setSellerProducts = useAppStore(
-        (state) => state.setSellerProducts
-    );
+    const setProducts = useAppStore((state) => state.setProducts);
+    const setSellerProducts = useAppStore((state) => state.setSellerProducts);
 
+    // Pagination selectors
+    const pagination = useAppStore((state) => state.productPagination);
+    const productsLoading = useAppStore((state) => state.productsLoading);
+    const productsError = useAppStore((state) => state.productsError);
+    const getAllProductsStore = useAppStore((state) => state.getAllProducts);
 
+    // ─── EXISTING HANDLERS ───
     async function handleCreateProduct(formData) {
         const data = await createProduct(formData);
         return data.product;
@@ -16,28 +32,31 @@ export const useProduct = () => {
 
     async function handleGetSellerProduct() {
         const data = await getSellerProducts();
-        //  console.log("API Response:", data);
-          setSellerProducts(data.products);
+        setSellerProducts(data.products);
         return data.products;
     }
-       
-    async function handleGetAllProducts(category){
-        const data = await getAllProducts(category)
-//  console.log("API Response:", data);
+
+    async function handleGetAllProducts(paramsOrCategory) {
+        // New: object pass hua → store action (has pagination state)
+        if (typeof paramsOrCategory === "object" && paramsOrCategory !== null) {
+            return await getAllProductsStore(paramsOrCategory);
+        }
+
+        // Old: string (category) pass hua
+        const data = await getAllProducts(paramsOrCategory);
         setProducts(data.products);
-        // console.log("Products from API:", data.products);
         return data.products;
     }
 
-    async function handleGetProductById(productId){
-        const data = await getProductById(productId)
-    return data.product
+    async function handleGetProductById(productId) {
+        const data = await getProductById(productId);
+        return data.product;
     }
 
-async function handleAddProductVariant(productId, newProductVariant){
-    const data = await addProductVariant(productId, newProductVariant)
-    return data;
-}
+    async function handleAddProductVariant(productId, newProductVariant) {
+        const data = await addProductVariant(productId, newProductVariant);
+        return data;
+    }
 
     async function handleUpdateProduct(productId, updates) {
         const data = await updateProduct(productId, updates);
@@ -60,6 +79,9 @@ async function handleAddProductVariant(productId, newProductVariant){
     }
 
     return {
+        // ✅ YE ADD KARO (products!)
+        products,
+
         handleCreateProduct,
         handleGetSellerProduct,
         handleGetAllProducts,
@@ -69,5 +91,8 @@ async function handleAddProductVariant(productId, newProductVariant){
         handleDeleteProduct,
         handleUpdateProductVariant,
         handleDeleteProductVariant,
+        pagination,
+        productsLoading,
+        productsError
     };
 };

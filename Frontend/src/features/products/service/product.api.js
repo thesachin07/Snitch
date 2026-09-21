@@ -16,26 +16,33 @@ export async function createProduct(formData) {
         throw error;
     }
 }
-    export async function getSellerProducts() {
+
+export async function getSellerProducts() {
         const response = await productApiInstance.get("/seller")
         return response.data;
     }
 
-export async function getAllProducts(category) {
-  try {
-    const response = await productApiInstance.get("/", {
-      params: category ? { category } : {},
-    });
+export const getAllProducts = async (paramsOrCategory) => {
+    let params = { page: 1, limit: 9 };
 
+    // Old usage: getAllProducts("men")
+    if (typeof paramsOrCategory === "string") {
+        params.category = paramsOrCategory;
+    }
+    // New usage: getAllProducts({ page: 1, limit: 9, category: "men" })
+    else if (typeof paramsOrCategory === "object" && paramsOrCategory !== null) {
+        const { page, limit, category, featured, sort } = paramsOrCategory;
+        if (page) params.page = page;
+        if (limit) params.limit = limit;
+        if (category) params.category = category;
+        if (featured !== undefined) params.featured = featured;
+        if (sort) params.sort = sort;
+    }
+
+    const response = await productApiInstance.get("/", { params });
     return response.data;
-  } catch (err) {
-    console.error(
-      `Fetch failed: ${err.response?.status || "Network Error"}`,
-      err.message
-    );
-    throw err;
-  }
-}
+};
+
     export async function getProductById(productId) {
         const response = await productApiInstance.get(`/detail/${productId}`)
         return response.data

@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
 import useAppStore from "../../../app/app.store";
-import { useProduct } from "../hooks/useProduct";
+import { getAllProducts } from "../service/product.api";
 
 import HomeHero from "../Components/HomeHero";
 import HomeCategories from "../Components/HomeCategories";
@@ -10,7 +10,6 @@ import HomeBenefits from "../Components/HomeBenefits";
 import BestOfSnitch from "../Components/BestOfSnitch";
 
 const Home = () => {
-const products = useAppStore((state) => state.products);
 const homepage = useAppStore((state) => state.homepage);
 const homepageLoading = useAppStore(
   (state) => state.homepageLoading
@@ -20,14 +19,27 @@ const homepageError = useAppStore(
   (state) => state.homepageError
 );
 
-const { handleGetAllProducts } = useProduct();
+const [featuredProducts, setFeaturedProducts] = useState([]);
+const [featuredLoading, setFeaturedLoading] = useState(true);
 
 const handleGetHomepage = useAppStore(
   (state) => state.handleGetHomepage
 );
 
  useEffect(() => {
-  handleGetAllProducts();
+  async function fetchFeaturedProducts() {
+    try {
+      const featuredData = await getAllProducts({ featured: true, limit: 8 });
+      setFeaturedProducts(featuredData.products || []);
+    } catch (error) {
+      console.error("Failed to fetch featured products", error);
+      setFeaturedProducts([]);
+    } finally {
+      setFeaturedLoading(false);
+    }
+  }
+
+  fetchFeaturedProducts();
   handleGetHomepage();
 }, []);
 // console.log("HOMEPAGE DATA:", homepage);
@@ -55,7 +67,7 @@ if (homepageLoading) {
       <HomeBenefits />
 
       {/* PRODUCTS FROM MONGODB */}
-      <BestOfSnitch products={products} />
+      <BestOfSnitch products={featuredLoading ? [] : featuredProducts} />
 
       {/* FOOTER */}
       <footer className="border-t border-[#e4e2df] px-6 md:px-10 lg:px-16 xl:px-24 py-14">

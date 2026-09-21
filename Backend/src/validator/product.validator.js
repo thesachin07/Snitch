@@ -34,6 +34,6 @@ export const getAllProductsValidator = [
     query("limit").optional().isInt({ min: 1, max: 50 }).withMessage("Limit 1-50"),
     query("category").optional().isIn(["men", "women", "kids"]).withMessage("Invalid category"),
     query("featured").optional().isIn(["true", "false"]).withMessage("Featured must be true/false"),
-    query("sort").optional().isIn(["newest", "oldest", "price_asc", "price_desc"]).withMessage("Invalid sort"),
+    query("sort").optional().isIn(["newest", "oldest", "price_asc", "price_desc", "new"]).withMessage("Invalid sort"),
     validateRequest
 ];
