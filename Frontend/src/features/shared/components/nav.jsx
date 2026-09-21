@@ -60,7 +60,7 @@ const Nav = () => {
                 Women
               </Link>
               <Link to="/products?sort=new" className="text-[10px] uppercase tracking-[0.2em] font-medium text-[#7A6E63] hover:text-[#1b1c1a] transition-colors">
-                New In
+                Kids
               </Link>
             </>
           )}

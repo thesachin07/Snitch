@@ -5,7 +5,15 @@ const BestOfSnitch = ({ products = [] }) => {
   const navigate = useNavigate();
 
   return (
-    <section className="px-6 md:px-10 lg:px-16 xl:px-24 py-24">
+    <>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet"
+      />
+      <section
+        className="px-6 md:px-10 lg:px-16 xl:px-24 py-24"
+        style={{ fontFamily: "'Inter', sans-serif" }}
+      >
 
       {/* HEADER */}
       <div className="flex items-end justify-between mb-12">
@@ -83,7 +91,8 @@ const BestOfSnitch = ({ products = [] }) => {
           View All →
         </Link>
       </div>
-    </section>
+      </section>
+    </>
   );
 };
 

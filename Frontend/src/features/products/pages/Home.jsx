@@ -45,16 +45,33 @@ const handleGetHomepage = useAppStore(
 // console.log("HOMEPAGE DATA:", homepage);
 if (homepageLoading) {
   return (
-    <div className="min-h-screen bg-[#fbf9f6] flex items-center justify-center">
-      <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9A96E]">
-        Loading...
-      </p>
-    </div>
+    <>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet"
+      />
+      <div
+        className="min-h-screen bg-[#fbf9f6] flex items-center justify-center"
+        style={{ fontFamily: "'Inter', sans-serif" }}
+      >
+        <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9A96E]">
+          Loading...
+        </p>
+      </div>
+    </>
   );
 }
 
   return (
-    <main className="min-h-screen bg-[#fbf9f6] text-[#1b1c1a]">
+    <>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet"
+      />
+      <main
+        className="min-h-screen bg-[#fbf9f6] text-[#1b1c1a]"
+        style={{ fontFamily: "'Inter', sans-serif" }}
+      >
 
 
       <HomeHero hero={homepage?.hero} />
@@ -151,7 +168,8 @@ if (homepageLoading) {
 
       </footer>
 
-    </main>
+      </main>
+    </>
   );
 };
 
