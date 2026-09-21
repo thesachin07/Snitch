@@ -2,13 +2,13 @@ import express from 'express';
 import { authenticateSeller } from '../middlewares/auth.middleware.js'
 import { createProduct, getSellerProducts, getAllProducts, getProductDetails,  addProductVariant, updateProduct, deleteProduct, updateProductVariant, deleteProductVariant } from '../controllers/product.controller.js';
 import multer from 'multer';
-import { createProductValidator, addVariantValidator } from '../validator/product.validator.js';
+import { createProductValidator, addVariantValidator, getAllProductsValidator } from '../validator/product.validator.js';
 
 const upload = multer(
     {
         storage: multer.memoryStorage(),
         limits: {
-            fileSize: 5 * 1024 * 1024 // 5MB
+            fileSize: 5 * 1024 * 1024 
         }
     }
 );
@@ -18,7 +18,7 @@ router.post("/", authenticateSeller, upload.array('images', 7), createProductVal
 
 router.get("/seller", authenticateSeller, getSellerProducts);
 
-router.get("/", getAllProducts)
+router.get("/", getAllProductsValidator, getAllProducts);
 
 router.get("/detail/:id", getProductDetails)
 
@@ -33,4 +33,9 @@ router.patch("/:productId/variants/:variantId", authenticateSeller, upload.array
 router.delete("/:productId/variants/:variantId", authenticateSeller, deleteProductVariant)
 
 export default router;
+
+
+
+
+
 

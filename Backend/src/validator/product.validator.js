@@ -1,4 +1,4 @@
-import { body, validationResult } from "express-validator";
+import { body, query, validationResult } from "express-validator";
 
 function validateRequest(req, res, next) {
     const errors = validationResult(req);
@@ -10,6 +10,7 @@ function validateRequest(req, res, next) {
     next();
     
 }
+
 
 export const createProductValidator = [
     body("title").notEmpty().withMessage("Title is required"),
@@ -26,3 +27,13 @@ export const addVariantValidator = [
     body("stock").isNumeric().withMessage("Stock must be a number"),
     validateRequest
 ]
+
+
+export const getAllProductsValidator = [
+    query("page").optional().isInt({ min: 1 }).withMessage("Page must be >= 1"),
+    query("limit").optional().isInt({ min: 1, max: 50 }).withMessage("Limit 1-50"),
+    query("category").optional().isIn(["men", "women", "kids"]).withMessage("Invalid category"),
+    query("featured").optional().isIn(["true", "false"]).withMessage("Featured must be true/false"),
+    query("sort").optional().isIn(["newest", "oldest", "price_asc", "price_desc"]).withMessage("Invalid sort"),
+    validateRequest
+];

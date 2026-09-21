@@ -71,6 +71,12 @@ isFeatured: {
   { timestamps: true },
 );
 
-const productModel = mongoose.model("product", ProductSchema);
 
+ProductSchema.index({ category: 1, createdAt: -1 });
+ProductSchema.index({ isFeatured: 1, createdAt: -1 });
+ProductSchema.index({ createdAt: -1 });
+ProductSchema.index({ "price.amount": 1 });
+
+const productModel = mongoose.model("product", ProductSchema);
 export default productModel;
+

@@ -1,5 +1,6 @@
 import productModel from "../models/product.model.js";
 import { uploadFile } from "../services/storage.service.js";
+import { getPaginatedProducts } from "../dao/product.dao.js";
 
 
 export async function createProduct(req, res) {
@@ -51,20 +52,30 @@ export async function getSellerProducts(req, res) {
 }
 
 export async function getAllProducts(req, res) {
-  const { category, featured } = req.body ?? {};  
-  const { category: cat, featured: feat } = req.query;
+    try {
+        const { page, limit, category, featured, sort } = req.query;
 
-  const filter = {};
-  if (cat) filter.category = cat;
-  if (feat === "true") filter.isFeatured = true;
+        const result = await getPaginatedProducts({
+            page,
+            limit,
+            category,
+            featured,
+            sort
+        });
 
-  const products = await productModel.find(filter);
-
-  return res.status(200).json({
-    message: "Products fetched successfully",
-    success: true,
-    products,
-  });
+        return res.status(200).json({
+            message: "Products fetched successfully",
+            success: true,
+            products: result.products,
+            pagination: result.pagination
+        });
+    } catch (error) {
+        console.error("getAllProducts error:", error);
+        return res.status(500).json({
+            message: "Failed to fetch products",
+            success: false
+        });
+    }
 }
 
  export async function getProductDetails(req, res){
