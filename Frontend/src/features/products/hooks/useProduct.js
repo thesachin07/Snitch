@@ -37,12 +37,12 @@ export const useProduct = () => {
     }
 
     async function handleGetAllProducts(paramsOrCategory) {
-        // New: object pass hua → store action (has pagination state)
+        
         if (typeof paramsOrCategory === "object" && paramsOrCategory !== null) {
             return await getAllProductsStore(paramsOrCategory);
         }
 
-        // Old: string (category) pass hua
+        
         const data = await getAllProducts(paramsOrCategory);
         setProducts(data.products);
         return data.products;

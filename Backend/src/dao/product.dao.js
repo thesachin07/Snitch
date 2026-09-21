@@ -1,5 +1,3 @@
-// Backend/src/dao/product.dao.js
-
 import productModel from '../models/product.model.js';
 
 export const stockOfVariant = async (productId, variantId) => {
