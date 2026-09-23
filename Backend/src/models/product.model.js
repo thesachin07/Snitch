@@ -58,6 +58,12 @@ isFeatured: {
                 type: Number,
                 default: 0
             },
+
+             reservedStock: {
+            type: Number,
+            default: 0,
+            min: 0
+        },
             attributes: {
                 type: Map,
                 of: String

@@ -6,6 +6,8 @@ import { getCartDetails } from "../dao/cart.dao.js";
 import paymentModel from "../models/payment.model.js";
 import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils.js";
 import { config } from "../config/config.js";
+import { reserveStock, releaseStock } from "../dao/product.dao.js";
+import reservationModel from "../models/reservation.model.js";
 
 const getUpdatedCart = async userId => {
     return (
@@ -336,89 +338,125 @@ export const removeCartItem = async (req, res) => {
 
 
 export const createOrderController = async (req, res) => {
+    try {
+        const cart = await getCartDetails(req.user._id);
 
-    const cart = await getCartDetails(req.user._id);
+        if (!cart || cart.items.length === 0) {
+            return res.status(400).json({
+                message: "Cart is empty",
+                success: false
+            });
+        }
 
-    if (!cart || cart.items.length === 0) {
-        return res.status(400).json({
-            message: "Cart is empty",
+        // STEP 1: Reserve list 
+        const itemsToReserve = cart.items.map((item) => ({
+            productId: item.product._id,
+            variantId: item.variant,
+            quantity: item.quantity
+        }));
+
+        // STEP 2: Stock hold/reserve  (agar stock kam hoga toh yahi catch block me jayega)
+        let reserved;
+        try {
+            reserved = await reserveStock(itemsToReserve);
+        } catch (err) {
+            return res.status(409).json({
+                message: err.message || "Stock unavailable",
+                success: false
+            });
+        }
+
+        // STEP 3: Razorpay order creation  (fail hua toh rollback stock)
+        let order;
+        try {
+            order = await createRazorpayOrder(
+                cart.totalPrice,
+                cart.currency
+            );
+        } catch (err) {
+            await releaseStock(reserved);
+            return res.status(500).json({
+                message: "Payment gateway error",
+                success: false
+            });
+        }
+
+        // STEP 4: Payment document create  (existing logic intact)
+        const payment = await paymentModel.create({
+            user: req.user._id,
+            razorpay: {
+                orderId: order.id
+            },
+            price: {
+                amount: cart.totalPrice,
+                currency: cart.currency
+            },
+            orderItems: cart.items.map(item => {
+                const variant = item.product.variants?.find(
+                    v => v._id.toString() === item.variant.toString()
+                );
+
+                const variantAttributes = variant?.attributes;
+                const variantLabel = variantAttributes
+                    ? Array.isArray(variantAttributes)
+                        ? variantAttributes.map(([key, value]) => `${key}: ${value}`).join(", ")
+                        : variantAttributes instanceof Map
+                            ? Array.from(variantAttributes.entries()).map(([key, value]) => `${key}: ${value}`).join(", ")
+                            : Object.entries(variantAttributes).map(([key, value]) => `${key}: ${value}`).join(", ")
+                    : undefined;
+
+                const itemPrice = item.currentPrice || item.price;
+                const itemTotal = (itemPrice?.amount || 0) * item.quantity;
+
+                return {
+                    title: item.product.title,
+                    productId: item.product._id,
+                    variantId: item.variant,
+                    variant: variantLabel,
+                    quantity: item.quantity,
+                    images: item.product.images,
+                    description: item.product.description,
+                    price: itemPrice,
+                    itemTotal
+                };
+            })
+        });
+
+        // STEP 5: Reservation track record  (10 minute validity)
+        await reservationModel.create({
+            user: req.user._id,
+            payment: payment._id,
+            items: reserved,
+            status: "active",
+            expiresAt: new Date(Date.now() + 10 * 60 * 1000)
+        });
+
+        return res.status(200).json({
+            message: "Order created successfully",
+            success: true,
+            order
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: error.message || "Internal server error",
             success: false
         });
     }
-
-    const order = await createRazorpayOrder(
-         cart.totalPrice,
-         cart.currency
-    );
-
-
-    const payment = await paymentModel.create({
-
-        user: req.user._id,
-
-        razorpay: {
-            orderId: order.id
-        },
-
-        price: {
-            amount: cart.totalPrice,
-            currency: cart.currency
-        },
-
-        orderItems: cart.items.map(item => {
-            const variant = item.product.variants?.find(
-                v => v._id.toString() === item.variant.toString()
-            );
-
-            const variantAttributes = variant?.attributes;
-            const variantLabel = variantAttributes
-                ? Array.isArray(variantAttributes)
-                    ? variantAttributes.map(([key, value]) => `${key}: ${value}`).join(", ")
-                    : variantAttributes instanceof Map
-                        ? Array.from(variantAttributes.entries()).map(([key, value]) => `${key}: ${value}`).join(", ")
-                        : Object.entries(variantAttributes).map(([key, value]) => `${key}: ${value}`).join(", ")
-                : undefined;
-
-            const itemPrice = item.currentPrice || item.price;
-        const itemTotal = (itemPrice?.amount || 0) * item.quantity;
-
-        return {
-                title: item.product.title,
-                productId: item.product._id,
-                variantId: item.variant,
-                variant: variantLabel,
-                quantity: item.quantity,
-                images: item.product.images,
-                description: item.product.description,
-                price: itemPrice,
-                itemTotal
-            };
-        })
-    });
-
-
-    return res.status(200).json({
-        message: "Order created successfully",
-        success: true,
-        order
-    });
 };
 
 
 export const verifyOrderController = async (req, res) => {
-
     const {
         razorpay_order_id,
         razorpay_payment_id,
         razorpay_signature
     } = req.body;
 
-
     const payment = await paymentModel.findOne({
         "razorpay.orderId": razorpay_order_id,
         status: "pending"
     });
-
 
     if (!payment) {
         return res.status(400).json({
@@ -427,7 +465,15 @@ export const verifyOrderController = async (req, res) => {
         });
     }
 
+    // Idempotency check
+    if (payment.status === "paid") {
+        return res.status(200).json({
+            message: "Already processed",
+            success: true
+        });
+    }
 
+    // Verify signature
     const isPaymentValid = validatePaymentVerification(
         {
             order_id: razorpay_order_id,
@@ -437,12 +483,21 @@ export const verifyOrderController = async (req, res) => {
         config.RAZORPAY_KEY_SECRET
     );
 
-
     if (!isPaymentValid) {
-
         payment.status = "failed";
-
         await payment.save();
+
+        //  Release reservation
+        const reservation = await reservationModel.findOne({
+            payment: payment._id,
+            status: "active"
+        });
+
+        if (reservation) {
+            await releaseStock(reservation.items);
+            reservation.status = "released";
+            await reservation.save();
+        }
 
         return res.status(400).json({
             message: "Payment verification failed",
@@ -450,16 +505,35 @@ export const verifyOrderController = async (req, res) => {
         });
     }
 
+    //  STEP 1: Find reservation
+    const reservation = await reservationModel.findOne({
+        payment: payment._id,
+        status: "active"
+    });
 
+    if (!reservation) {
+        return res.status(410).json({
+            message: "Reservation expired. Please retry checkout.",
+            success: false
+        });
+    }
+
+    // STEP 2: Commit stock (actual decrement)
+    await commitStock(reservation.items);
+    reservation.status = "committed";
+    await reservation.save();
+
+    //  STEP 3: Update payment
     payment.status = "paid";
-
     payment.razorpay.paymentId = razorpay_payment_id;
-
     payment.razorpay.signature = razorpay_signature;
-
-
     await payment.save();
 
+    // STEP 4: Clear cart
+    await cartModel.findOneAndUpdate(
+        { user: req.user._id },
+        { $set: { items: [] } }
+    );
 
     return res.status(200).json({
         message: "Payment verified successfully",
